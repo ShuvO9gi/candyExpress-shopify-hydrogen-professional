@@ -38,6 +38,14 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
+  fetchMenuItems().then((menuItems) => {
+    if (menuItems) {
+      console.log('Menu Items:', JSON.stringify(menuItems));
+      // Process menu items here
+    } else {
+      console.log('Failed to fetch menu items');
+    }
+  });
 
   return (
     <div className="collection">
@@ -59,6 +67,24 @@ export default function Collection() {
       </Pagination>
     </div>
   );
+}
+
+async function fetchMenuItems() {
+  try {
+    const response = await fetch(
+      'https://staging.candyexpress.com/api/v1/menu-item',
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch menu items');
+    }
+
+    const menuItems = await response.json();
+    return menuItems;
+  } catch (error) {
+    console.error('Error fetching menu items:', error);
+    return null;
+  }
 }
 
 function ProductsGrid({products}: {products: ProductItemFragment[]}) {
@@ -119,6 +145,7 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     id
     handle
     title
+    tags
     featuredImage {
       id
       altText
