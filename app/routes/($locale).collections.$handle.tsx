@@ -118,8 +118,12 @@ function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
   return (
     <>
       <div className="flex justify-end mb-12" >
-        <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" onClick={previous} />
-        <img src={rightArrow} alt="Right" className="w-8 h-8" onClick={next} />
+        <button onClick={previous}>
+          <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8 cursor-pointer" />
+        </button>
+        <button onClick={next}>
+          <img src={rightArrow} alt="Right" className="w-8 h-8 cursor-pointer" />
+        </button >
       </div>
       <div className="/* products-grid */  slider-container">
 
