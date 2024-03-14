@@ -1,30 +1,29 @@
-/* eslint-disable prettier/prettier */
-import { json, redirect, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import { useLoaderData, Link, type MetaFunction } from '@remix-run/react';
+import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {
   Pagination,
   getPaginationVariables,
   Image,
   Money,
 } from '@shopify/hydrogen';
-import type { ProductItemFragment } from 'storefrontapi.generated';
-import { useVariantUrl } from '~/lib/variants';
+import type {ProductItemFragment} from 'storefrontapi.generated';
+import {useVariantUrl} from '~/lib/variants';
 import infoIcon from '../../public/icon_info.svg';
 import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
 import Slider from 'react-slick';
-import { useRef } from 'react';
+import {useRef} from 'react';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return [{ title: `Hydrogen | ${data?.collection.title ?? ''} Collection` }];
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
 };
 
-export async function loader({ request, params, context }: LoaderFunctionArgs) {
-  const { handle } = params;
-  const { storefront } = context;
+export async function loader({request, params, context}: LoaderFunctionArgs) {
+  const {handle} = params;
+  const {storefront} = context;
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 200,
   });
@@ -33,8 +32,8 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
     return redirect('/collections');
   }
 
-  const { collection } = await storefront.query(COLLECTION_QUERY, {
-    variables: { handle, ...paginationVariables },
+  const {collection} = await storefront.query(COLLECTION_QUERY, {
+    variables: {handle, ...paginationVariables},
   });
 
   if (!collection) {
@@ -42,12 +41,11 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
       status: 404,
     });
   }
-  return json({ collection });
+  return json({collection});
 }
 
-
 export default function Collection() {
-  const { collection } = useLoaderData<typeof loader>();
+  const {collection} = useLoaderData<typeof loader>();
   fetchMenuItems().then((menuItems) => {
     if (menuItems) {
       console.log('Menu Items:', JSON.stringify(menuItems));
@@ -61,13 +59,10 @@ export default function Collection() {
 
   return (
     <div className="collection collection-custom">
-
       <Pagination connection={collection.products}>
-        {({ nodes, isLoading, PreviousLink, NextLink }) => (
+        {({nodes, isLoading, PreviousLink, NextLink}) => (
           <>
-
             <ProductsGrid products={nodes} />
-
           </>
         )}
       </Pagination>
@@ -92,8 +87,7 @@ async function fetchMenuItems() {
     return null;
   }
 }
-function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
-
+function ProductsGrid({products}: {products: ProductItemFragment[]}) {
   let sliderRef: any = useRef(null);
 
   const next = () => {
@@ -102,7 +96,7 @@ function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
 
   const previous = () => {
     sliderRef.slickPrev();
-  }
+  };
 
   const settings = {
     /* className: 'center', */
@@ -117,17 +111,21 @@ function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
 
   return (
     <>
-      <div className="flex justify-end mb-12" >
+      <div className="flex justify-end mb-12">
         <button onClick={previous}>
-          <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8 cursor-pointer" />
+          <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
         </button>
         <button onClick={next}>
-          <img src={rightArrow} alt="Right" className="w-8 h-8 cursor-pointer" />
-        </button >
+          <img src={rightArrow} alt="Right" className="w-8 h-8" />
+        </button>
       </div>
       <div className="/* products-grid */  slider-container">
-
-        <Slider {...settings} ref={(slider: any) => { sliderRef = slider; }} >
+        <Slider
+          {...settings}
+          ref={(slider: any) => {
+            sliderRef = slider;
+          }}
+        >
           {products.map((product, index) => {
             return (
               <ProductItem
@@ -138,7 +136,7 @@ function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
             );
           })}
         </Slider>
-      </div >
+      </div>
     </>
   );
 }
@@ -179,9 +177,7 @@ function ProductItem({
             />
           )}
         </div>
-        <div
-          className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[246px] h-[212px] mt-[-98px] -z-10 flex flex-col items-center"
-        >
+        <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[246px] h-[212px] mt-[-98px] -z-10 flex flex-col items-center">
           <h4 className="mt-[90px] font-bold text-[18px]">{product.title}</h4>
           {/* {console.log(product)}
           {console.log(product.tags)}
