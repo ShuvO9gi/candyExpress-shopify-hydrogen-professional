@@ -379,6 +379,10 @@ aside li {
   width: 100%;
 }
 
+.slider-container>.slick-slider>.slick-list>.slick-track {
+  display: flex;
+}
+
 /*
 * --------------------------------------------------
 * routes/products.$handle.tsx
