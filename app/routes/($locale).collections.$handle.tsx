@@ -13,7 +13,7 @@ import infoIcon from '../../public/icon_info.svg';
 import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
 import Slider from 'react-slick';
-import React, { Component, useRef } from 'react';
+import { useRef } from 'react';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -26,7 +26,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
   const { handle } = params;
   const { storefront } = context;
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 20,
+    pageBy: 200,
   });
 
   if (!handle) {
@@ -52,7 +52,6 @@ export default function Collection() {
     if (menuItems) {
       console.log('Menu Items:', JSON.stringify(menuItems));
       // Process menu items here
-      console.log(menuItems[tag_name]);
     } else {
       console.log('Failed to fetch menu items');
     }
@@ -61,28 +60,14 @@ export default function Collection() {
   // let slider: any = useRef(null);
 
   return (
-    <div className="collection">
-      <div className="flex justify-between items-center">
-        <h1 className="font-bold text-[32px] text-[#323232]">
-          {collection.title}
-        </h1>
-        <div className="flex justify-around">
-          <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" onClick={() => { slider?.current?.slickPrev(); console.log("Prev"); }} />
-          <img src={rightArrow} alt="Right" className="w-8 h-8" onClick={() => slider?.current?.slickNext()} />
-        </div>
-      </div>
-      {/* <p className="collection-description">{collection.description}</p> */}
+    <div className="collection collection-custom">
+
       <Pagination connection={collection.products}>
         {({ nodes, isLoading, PreviousLink, NextLink }) => (
           <>
-            <PreviousLink>
-              {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-            </PreviousLink>
+
             <ProductsGrid products={nodes} />
-            <br />
-            <NextLink>
-              {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-            </NextLink>
+
           </>
         )}
       </Pagination>
@@ -108,8 +93,9 @@ async function fetchMenuItems() {
   }
 }
 function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
-  // let slider: any = useRef(null);
+
   let sliderRef: any = useRef(null);
+
   const next = () => {
     sliderRef.slickNext();
   };
@@ -118,13 +104,13 @@ function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
     sliderRef.slickPrev();
   }
 
-  let settings = {
-    className: 'center',
+  const settings = {
+    /* className: 'center', */
     infinite: false,
     speed: 500,
-    centerPadding: '60px',
+    /* centerPadding: '60px', */
     slidesToShow: 5,
-    slidesToScroll: 3,
+    slidesToScroll: 4,
     swipeToSlide: true,
     arrows: false,
   };
@@ -137,7 +123,6 @@ function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
       </div>
       <div className="/* products-grid */  slider-container">
 
-        {/* <Slider {...settings} ref={slider} > */}
         <Slider {...settings} ref={(slider: any) => { sliderRef = slider; }} >
           {products.map((product, index) => {
             return (
