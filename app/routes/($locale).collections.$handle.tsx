@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { json, redirect, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import { useLoaderData, Link, type MetaFunction } from '@remix-run/react';
 import {
@@ -12,7 +13,8 @@ import infoIcon from '../../public/icon_info.svg';
 import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
 import Slider from 'react-slick';
-import React, { Component } from 'react';
+import React, { Component, useRef } from 'react';
+
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -43,16 +45,20 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
   return json({ collection });
 }
 
+
 export default function Collection() {
   const { collection } = useLoaderData<typeof loader>();
   fetchMenuItems().then((menuItems) => {
     if (menuItems) {
       console.log('Menu Items:', JSON.stringify(menuItems));
       // Process menu items here
+      console.log(menuItems[tag_name]);
     } else {
       console.log('Failed to fetch menu items');
     }
   });
+
+  // let slider: any = useRef(null);
 
   return (
     <div className="collection">
@@ -61,8 +67,8 @@ export default function Collection() {
           {collection.title}
         </h1>
         <div className="flex justify-around">
-          <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
-          <img src={rightArrow} alt="Right" className="w-8 h-8" />
+          <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" onClick={() => { slider?.current?.slickPrev(); console.log("Prev"); }} />
+          <img src={rightArrow} alt="Right" className="w-8 h-8" onClick={() => slider?.current?.slickNext()} />
         </div>
       </div>
       {/* <p className="collection-description">{collection.description}</p> */}
@@ -101,34 +107,50 @@ async function fetchMenuItems() {
     return null;
   }
 }
-
 function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
+  // let slider: any = useRef(null);
+  let sliderRef: any = useRef(null);
+  const next = () => {
+    sliderRef.slickNext();
+  };
+
+  const previous = () => {
+    sliderRef.slickPrev();
+  }
+
   let settings = {
     className: 'center',
     infinite: false,
+    speed: 500,
     centerPadding: '60px',
     slidesToShow: 5,
+    slidesToScroll: 3,
     swipeToSlide: true,
-    afterChange: (index) => {
-      console.log(
-        `Slider Changed to: ${index + 1}, background: #222; color: #bada55`,
-      );
-    },
+    arrows: false,
   };
+
   return (
-    <div className="/* products-grid */  slider-container">
-      <Slider {...settings}>
-        {products.map((product, index) => {
-          return (
-            <ProductItem
-              key={product.id}
-              product={product}
-              loading={index < 8 ? 'eager' : undefined}
-            />
-          );
-        })}
-      </Slider>
-    </div>
+    <>
+      <div className="flex justify-end mb-12" >
+        <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" onClick={previous} />
+        <img src={rightArrow} alt="Right" className="w-8 h-8" onClick={next} />
+      </div>
+      <div className="/* products-grid */  slider-container">
+
+        {/* <Slider {...settings} ref={slider} > */}
+        <Slider {...settings} ref={(slider: any) => { sliderRef = slider; }} >
+          {products.map((product, index) => {
+            return (
+              <ProductItem
+                key={product.id}
+                product={product}
+                loading={index < 8 ? 'eager' : undefined}
+              />
+            );
+          })}
+        </Slider>
+      </div >
+    </>
   );
 }
 
@@ -170,15 +192,11 @@ function ProductItem({
         </div>
         <div
           className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[246px] h-[212px] mt-[-98px] -z-10 flex flex-col items-center"
-          style={
-            {
-              /* backgroundColor: "rgba(211, 181, 209, 0.22)", */
-            }
-          }
         >
           <h4 className="mt-[90px] font-bold text-[18px]">{product.title}</h4>
-          {console.log(product)}
+          {/* {console.log(product)}
           {console.log(product.tags)}
+          {console.log(product.tags[2])} */}
           <small className="font-semibold text-[14px] text-[#9C6EAA]">
             <Money data={product.priceRange.minVariantPrice} />
           </small>
