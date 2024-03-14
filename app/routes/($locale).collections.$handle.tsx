@@ -12,7 +12,7 @@ import infoIcon from '../../public/icon_info.svg';
 import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
 import Slider from 'react-slick';
-import {useRef} from 'react';
+import React, {createRef, useEffect, useRef, useState} from 'react';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -46,14 +46,24 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
-  fetchMenuItems().then((menuItems) => {
-    if (menuItems) {
-      console.log('Menu Items:', JSON.stringify(menuItems));
-      // Process menu items here
-    } else {
-      console.log('Failed to fetch menu items');
-    }
-  });
+  const [categories, setCategories] = useState(['Silk', 'Candy', 'Chocolate']);
+  // useEffect(() => {
+  //   const fetchMenuItemsData = async () => {
+  //     try {
+  //       const menuItems = await fetchMenuItems();
+  //       if (menuItems) {
+  //         console.log('Menu Items:', menuItems);
+  //         setCategories(menuItems);
+  //       } else {
+  //         console.log('Failed to fetch menu items');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching menu items:', error);
+  //     }
+  //   };
+
+  //   fetchMenuItemsData();
+  // }, []);
 
   // let slider: any = useRef(null);
 
@@ -62,7 +72,7 @@ export default function Collection() {
       <Pagination connection={collection.products}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
           <>
-            <ProductsGrid products={nodes} />
+            <ProductsGrid products={nodes} categories={categories} />
           </>
         )}
       </Pagination>
@@ -87,17 +97,15 @@ async function fetchMenuItems() {
     return null;
   }
 }
-function ProductsGrid({products}: {products: ProductItemFragment[]}) {
-  let sliderRef: any = useRef(null);
 
-  const next = () => {
-    sliderRef.slickNext();
-  };
-
-  const previous = () => {
-    sliderRef.slickPrev();
-  };
-
+function ProductsGrid({
+  products,
+  categories,
+}: {
+  products: ProductItemFragment[];
+  categories: string[];
+}) {
+  const sliderRefs = useRef<Array<any>>([]);
   const settings = {
     /* className: 'center', */
     infinite: false,
@@ -109,35 +117,55 @@ function ProductsGrid({products}: {products: ProductItemFragment[]}) {
     arrows: false,
   };
 
+  // Ensure the sliderRefs array is initialized with refs for each category
+  useEffect(() => {
+    sliderRefs.current = Array(categories.length)
+      .fill(null)
+      .map(() => createRef());
+  }, [categories]);
+
+  const next = (index: number) => {
+    if (sliderRefs.current[index].current) {
+      sliderRefs.current[index].current.slickNext();
+    }
+  };
+
+  const previous = (index: number) => {
+    if (sliderRefs.current[index].current) {
+      sliderRefs.current[index].current.slickPrev();
+    }
+  };
+
   return (
-    <>
-      <div className="flex justify-end mb-12">
-        <button onClick={previous}>
-          <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
-        </button>
-        <button onClick={next}>
-          <img src={rightArrow} alt="Right" className="w-8 h-8" />
-        </button>
-      </div>
-      <div className="/* products-grid */  slider-container">
-        <Slider
-          {...settings}
-          ref={(slider: any) => {
-            sliderRef = slider;
-          }}
-        >
-          {products.map((product, index) => {
-            return (
-              <ProductItem
-                key={product.id}
-                product={product}
-                loading={index < 8 ? 'eager' : undefined}
-              />
-            );
-          })}
-        </Slider>
-      </div>
-    </>
+    <div>
+      {categories.map((category, index) => (
+        <div key={index}>
+          <div className="flex justify-between">
+            <h1 className="text-4xl font-bold mb-8">{category}</h1>
+            <div className="flex mb-12">
+              <button onClick={() => previous(index)}>
+                <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
+              </button>
+              <button onClick={() => next(index)}>
+                <img src={rightArrow} alt="Right" className="w-8 h-8" />
+              </button>
+            </div>
+          </div>
+
+          <div className="/* products-grid */  slider-container">
+            <Slider {...settings} ref={sliderRefs.current[index]}>
+              {products.map((product, idx) => (
+                <ProductItem
+                  key={idx}
+                  product={product}
+                  loading={idx < 8 ? 'eager' : undefined}
+                />
+              ))}
+            </Slider>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
