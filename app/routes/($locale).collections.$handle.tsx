@@ -16,7 +16,12 @@ import React, {createRef, useEffect, useRef, useState} from 'react';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import type {Category, MenuItems, TopMenu} from '~/dtos/collections.dto';
+import type {
+  Category,
+  MenuItems,
+  TopMenu,
+  VerticalMenu,
+} from '~/dtos/collections.dto';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -55,7 +60,7 @@ export default function Collection() {
         const menuItems: MenuItems = await fetchMenuItems();
         if (menuItems) {
           setCategories(
-            menuItems.data.top_menu.map((item: TopMenu) => {
+            menuItems.data.vertical_menu.map((item: VerticalMenu) => {
               return {
                 display_name: item.display_name,
                 tag_name: item.tag_name,
