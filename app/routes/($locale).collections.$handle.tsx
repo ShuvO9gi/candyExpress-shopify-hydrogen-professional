@@ -16,6 +16,7 @@ import React, {createRef, useEffect, useRef, useState} from 'react';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import type {Category, MenuItems, TopMenu} from '~/dtos/collections.dto';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -46,26 +47,31 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
-  const [categories, setCategories] = useState(['Silk', 'Candy', 'Chocolate']);
-  // useEffect(() => {
-  //   const fetchMenuItemsData = async () => {
-  //     try {
-  //       const menuItems = await fetchMenuItems();
-  //       if (menuItems) {
-  //         console.log('Menu Items:', menuItems);
-  //         setCategories(menuItems);
-  //       } else {
-  //         console.log('Failed to fetch menu items');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching menu items:', error);
-  //     }
-  //   };
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  //   fetchMenuItemsData();
-  // }, []);
+  useEffect(() => {
+    const fetchMenuItemsData = async () => {
+      try {
+        const menuItems: MenuItems = await fetchMenuItems();
+        if (menuItems) {
+          setCategories(
+            menuItems.data.top_menu.map((item: TopMenu) => {
+              return {
+                display_name: item.display_name,
+                tag_name: item.tag_name,
+              };
+            }),
+          );
+        } else {
+          console.log('Failed to fetch menu items');
+        }
+      } catch (error) {
+        console.error('Error fetching menu items:', error);
+      }
+    };
 
-  // let slider: any = useRef(null);
+    fetchMenuItemsData();
+  }, []);
 
   return (
     <div className="collection collection-custom">
@@ -80,9 +86,9 @@ export default function Collection() {
   );
 }
 
-async function fetchMenuItems() {
+async function fetchMenuItems(): Promise<MenuItems> {
   try {
-    const response = await fetch(
+    const response: any = await fetch(
       'https://staging.candyexpress.com/api/v1/menu-item',
     );
 
@@ -90,81 +96,100 @@ async function fetchMenuItems() {
       throw new Error('Failed to fetch menu items');
     }
 
-    const menuItems = await response.json();
+    const menuItems: Promise<MenuItems> = await response.json();
     return menuItems;
   } catch (error) {
     console.error('Error fetching menu items:', error);
-    return null;
+    return {} as any; // Fix: Return an empty object instead of an empty array
   }
-}
+} // Import your slider component
 
 function ProductsGrid({
   products,
   categories,
 }: {
   products: ProductItemFragment[];
-  categories: string[];
+  categories: Category[];
 }) {
-  const sliderRefs = useRef<Array<any>>([]);
+  // Move the useRef and useEffect hooks outside of the map function
+  const sliderRefs = useRef<Array<Slider | null>>([]);
+
+  // Slider settings
   const settings = {
-    /* className: 'center', */
     infinite: false,
     speed: 500,
-    /* centerPadding: '60px', */
     slidesToShow: 5,
     slidesToScroll: 4,
     swipeToSlide: true,
     arrows: false,
   };
 
-  // Ensure the sliderRefs array is initialized with refs for each category
+  // Update sliderRefs when categories change
   useEffect(() => {
-    sliderRefs.current = Array(categories.length)
-      .fill(null)
-      .map(() => createRef());
-  }, [categories]);
+    sliderRefs.current = Array(products.length).fill(null);
+  }, [products.length, categories.length]);
 
+  // Function to navigate to next slide
   const next = (index: number) => {
-    if (sliderRefs.current[index].current) {
-      sliderRefs.current[index].current.slickNext();
+    if (sliderRefs.current[index]) {
+      sliderRefs.current[index]?.slickNext();
     }
   };
 
+  // Function to navigate to previous slide
   const previous = (index: number) => {
-    if (sliderRefs.current[index].current) {
-      sliderRefs.current[index].current.slickPrev();
+    if (sliderRefs.current[index]) {
+      sliderRefs.current[index]?.slickPrev();
     }
   };
 
   return (
     <div>
-      {categories.map((category, index) => (
-        <div key={index}>
-          <div className="flex justify-between">
-            <h1 className="text-4xl font-bold mb-8">{category}</h1>
-            <div className="flex mb-12">
-              <button onClick={() => previous(index)}>
-                <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
-              </button>
-              <button onClick={() => next(index)}>
-                <img src={rightArrow} alt="Right" className="w-8 h-8" />
-              </button>
+      {categories.map((category, index) => {
+        // Filter products based on category
+        const filteredProducts = products.filter((product) =>
+          product.tags.includes(category.tag_name),
+        );
+
+        return (
+          <div key={category.tag_name}>
+            <div className="flex justify-between items-center mb-8">
+              <h1 className="text-4xl font-bold">{category.display_name}</h1>
+              <div className="flex">
+                {/* Button to navigate to previous slide */}
+                <button onClick={() => previous(index)}>
+                  <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
+                </button>
+                {/* Button to navigate to next slide */}
+                <button onClick={() => next(index)}>
+                  <img src={rightArrow} alt="Right" className="w-8 h-8" />
+                </button>
+              </div>
+            </div>
+
+            <div className="slider-container">
+              {/* Slider component */}
+              <Slider
+                {...settings}
+                ref={(slider: Slider | null) => {
+                  // Update sliderRefs with Slider instances
+                  sliderRefs.current[index] = slider;
+                }}
+              >
+                {/* Render ProductItem components */}
+                {filteredProducts.map((product, idx) => (
+                  <div key={`${product.id}-${idx}`}>
+                    <ProductItem
+                      product={product}
+                      loading={idx < 8 ? 'eager' : undefined}
+                    />
+                  </div>
+                ))}
+              </Slider>
             </div>
           </div>
-
-          <div className="/* products-grid */  slider-container">
-            <Slider {...settings} ref={sliderRefs.current[index]}>
-              {products.map((product, idx) => (
-                <ProductItem
-                  key={idx}
-                  product={product}
-                  loading={idx < 8 ? 'eager' : undefined}
-                />
-              ))}
-            </Slider>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
