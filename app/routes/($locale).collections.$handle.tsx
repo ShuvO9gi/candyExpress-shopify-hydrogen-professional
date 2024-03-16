@@ -13,8 +13,6 @@ import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
 import {useEffect, useState} from 'react';
 
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 import type {
   Category,
   MenuItems,
