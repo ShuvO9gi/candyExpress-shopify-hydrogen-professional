@@ -11,8 +11,7 @@ import {useVariantUrl} from '~/lib/variants';
 import infoIcon from '../../public/icon_info.svg';
 import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
-import Slider from 'react-slick';
-import React, {createRef, useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -107,7 +106,7 @@ async function fetchMenuItems(): Promise<MenuItems> {
     console.error('Error fetching menu items:', error);
     return {} as any; // Fix: Return an empty object instead of an empty array
   }
-} // Import your slider component
+}
 
 function ProductsGrid({
   products,
@@ -116,42 +115,63 @@ function ProductsGrid({
   products: ProductItemFragment[];
   categories: Category[];
 }) {
-  // Move the useRef and useEffect hooks outside of the map function
-  const sliderRefs = useRef<Array<Slider | null>>([]);
+  const [scrollPositions, setScrollPositions] = useState<Array<number>>(
+    Array(categories.length).fill(0),
+  );
+  const [windowWidth, setWindowWidth] = useState(() => {
+    // Initialize windowWidth with the actual window width if available,
+    // Otherwise, default to 0
+    return typeof window !== 'undefined' ? window.innerWidth : 0;
+  });
 
-  // Slider settings
-  const settings = {
-    infinite: false,
-    speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 4,
-    swipeToSlide: true,
-    arrows: false,
-  };
-
-  // Update sliderRefs when categories change
   useEffect(() => {
-    sliderRefs.current = Array(products.length).fill(null);
-  }, [products.length, categories.length]);
+    // Check if window is defined (i.e., we are in the browser environment)
+    if (typeof window !== 'undefined') {
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+      };
 
-  // Function to navigate to next slide
-  const next = (index: number) => {
-    if (sliderRefs.current[index]) {
-      sliderRefs.current[index]?.slickNext();
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
     }
-  };
+  }, []);
 
-  // Function to navigate to previous slide
-  const previous = (index: number) => {
-    if (sliderRefs.current[index]) {
-      sliderRefs.current[index]?.slickPrev();
+  const handleScroll = (index: number, direction: 'left' | 'right') => {
+    // Check if window is defined (i.e., we are in the browser environment)
+    if (typeof window !== 'undefined') {
+      const scrollContainer = document.getElementById(
+        `slider-container-${index}`,
+      );
+      if (!scrollContainer) return;
+
+      // Calculate the scroll amount based on the width of 5 products
+      const scrollAmount =
+        direction === 'left' ? -5 * windowWidth : 5 * windowWidth;
+
+      // Apply smooth scrolling animation
+      scrollContainer.style.transition = 'transform 0.5s ease-in-out';
+      scrollContainer.scrollLeft += scrollAmount;
+
+      // Update scroll position after animation completes
+      setTimeout(() => {
+        setScrollPositions((prevScrollPositions) => {
+          const updatedPositions = [...prevScrollPositions];
+          updatedPositions[index] = scrollContainer.scrollLeft;
+          return updatedPositions;
+        });
+
+        // Remove transition to avoid affecting subsequent scrolls
+        scrollContainer.style.transition = 'none';
+      }, 500);
     }
   };
 
   return (
     <div>
       {categories.map((category, index) => {
-        // Filter products based on category
         const filteredProducts = products.filter((product) =>
           product.tags.includes(category.tag_name),
         );
@@ -161,36 +181,35 @@ function ProductsGrid({
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-4xl font-bold">{category.display_name}</h1>
               <div className="flex">
-                {/* Button to navigate to previous slide */}
-                <button onClick={() => previous(index)}>
+                <button onClick={() => handleScroll(index, 'left')}>
                   <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
                 </button>
-                {/* Button to navigate to next slide */}
-                <button onClick={() => next(index)}>
+                <button onClick={() => handleScroll(index, 'right')}>
                   <img src={rightArrow} alt="Right" className="w-8 h-8" />
                 </button>
               </div>
             </div>
 
-            <div className="slider-container">
-              {/* Slider component */}
-              <Slider
-                {...settings}
-                ref={(slider: Slider | null) => {
-                  // Update sliderRefs with Slider instances
-                  sliderRefs.current[index] = slider;
-                }}
-              >
-                {/* Render ProductItem components */}
-                {filteredProducts.map((product, idx) => (
-                  <div key={`${product.id}-${idx}`}>
-                    <ProductItem
-                      product={product}
-                      loading={idx < 8 ? 'eager' : undefined}
-                    />
-                  </div>
-                ))}
-              </Slider>
+            <div
+              className="slider-container"
+              id={`slider-container-${index}`}
+              style={{
+                overflowX: 'hidden',
+                whiteSpace: 'nowrap',
+                transition: 'transform 0.5s ease-in-out',
+              }}
+            >
+              {filteredProducts.map((product, idx) => (
+                <div
+                  key={`${product.id}-${idx}`}
+                  style={{display: 'inline-block', marginRight: '10px'}}
+                >
+                  <ProductItem
+                    product={product}
+                    loading={idx < 8 ? 'eager' : undefined}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         );
