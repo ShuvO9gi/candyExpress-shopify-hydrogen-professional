@@ -174,7 +174,7 @@ function ProductsGrid({
           product.tags.includes(category.tag_name),
         );
 
-        return (
+        return filteredProducts.length ? (
           <div key={category.tag_name}>
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-4xl font-bold">{category.display_name}</h1>
@@ -210,7 +210,7 @@ function ProductsGrid({
               ))}
             </div>
           </div>
-        );
+        ) : null;
       })}
     </div>
   );
