@@ -76,7 +76,7 @@ export default function Collection() {
   }, []);
 
   return (
-    <div className="collection collection-custom">
+    <div className="collection ">
       <Pagination connection={collection.products}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
           <>
@@ -113,6 +113,7 @@ function ProductsGrid({
   products: ProductItemFragment[];
   categories: Category[];
 }) {
+  // return '';
   const [scrollPositions, setScrollPositions] = useState<Array<number>>(
     Array(categories.length).fill(0),
   );
@@ -145,9 +146,12 @@ function ProductsGrid({
       );
       if (!scrollContainer) return;
 
-      // Calculate the scroll amount based on the width of 5 products
+      // Calculate the scroll amount based on the width of products
+      const numProductsPerSlide = calculateNumProductsPerSlide(windowWidth);
       const scrollAmount =
-        direction === 'left' ? -5 * windowWidth : 5 * windowWidth;
+        direction === 'left'
+          ? -numProductsPerSlide * getProductWidth()
+          : numProductsPerSlide * getProductWidth();
 
       // Apply smooth scrolling animation
       scrollContainer.style.transition = 'transform 0.5s ease-in-out';
@@ -164,6 +168,29 @@ function ProductsGrid({
         // Remove transition to avoid affecting subsequent scrolls
         scrollContainer.style.transition = 'none';
       }, 500);
+    }
+  };
+
+  // Function to calculate the number of products to display per slide based on the screen width
+  const calculateNumProductsPerSlide = (width: number) => {
+    if (width >= 1280) {
+      return 5; // Display 5 products per slide for screens wider than or equal to 1280px
+    } else if (width >= 1024) {
+      return 4; // Display 4 products per slide for screens wider than or equal to 1024px
+    } else if (width >= 768) {
+      return 3; // Display 3 products per slide for screens wider than or equal to 768px
+    } else {
+      return 2; // Display 2 products per slide for screens narrower than 768px
+    }
+  };
+
+  // Function to get the width of a single product element
+  const getProductWidth = () => {
+    const productElement = document.querySelector('.product-item');
+    if (productElement) {
+      return productElement.clientWidth;
+    } else {
+      return 0; // Default to 0 if product element is not found
     }
   };
 
@@ -200,6 +227,7 @@ function ProductsGrid({
               {filteredProducts.map((product, idx) => (
                 <div
                   key={`${product.id}-${idx}`}
+                  className="product-item" // Add class name for product items
                   style={{display: 'inline-block', marginRight: '10px'}}
                 >
                   <ProductItem

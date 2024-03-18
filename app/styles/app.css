@@ -302,8 +302,6 @@ aside li {
   gap: 1rem;
 }
 
-
-
 /*
 * --------------------------------------------------
 * routes/__index
@@ -389,7 +387,7 @@ aside li {
   overflow: hidden;
 }
 
-.slider-container>.slick-slider>.slick-list>.slick-track {
+.slider-container > .slick-slider > .slick-list > .slick-track {
   display: flex;
 }
 
