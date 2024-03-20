@@ -31,15 +31,15 @@ export function Layout({
 }: LayoutProps) {
   return (
     <>
-      <CartAside cart={cart} />
+      {/* <CartAside cart={cart} />
       <SearchAside />
-      <MobileMenuAside menu={header?.menu} shop={header?.shop} />
+      <MobileMenuAside menu={header?.menu} shop={header?.shop} /> */}
       {header && <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />}
       <main>{children}</main>
       <Suspense>
-        <Await resolve={footer}>
+        {/* <Await resolve={footer}>
           {(footer) => <Footer menu={footer?.menu} shop={header?.shop} />}
-        </Await>
+        </Await> */}
       </Suspense>
     </>
   );

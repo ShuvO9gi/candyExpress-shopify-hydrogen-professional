@@ -19,18 +19,18 @@ export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collections">
+    <div>
       <h1>Collections</h1>
       <Pagination connection={collections}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
           <div>
-            <PreviousLink>
+            {/* <PreviousLink>
               {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-            </PreviousLink>
+            </PreviousLink> */}
             <CollectionsGrid collections={nodes} />
-            <NextLink>
+            {/* <NextLink>
               {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-            </NextLink>
+            </NextLink> */}
           </div>
         )}
       </Pagination>
@@ -40,7 +40,9 @@ export default function Collections() {
 
 function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   return (
-    <div className="collections-grid">
+    <div
+    // className="collections-grid"
+    >
       {collections.map((collection, index) => (
         <CollectionItem
           key={collection.id}
@@ -61,7 +63,7 @@ function CollectionItem({
 }) {
   return (
     <Link
-      className="collection-item"
+      // className="collection-item"
       key={collection.id}
       to={`/collections/${collection.handle}`}
       prefetch="intent"

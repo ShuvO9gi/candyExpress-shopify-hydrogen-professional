@@ -48,6 +48,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 }
 
 export default function Collection() {
+  // return '';
   const {collection} = useLoaderData<typeof loader>();
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -76,14 +77,11 @@ export default function Collection() {
   }, []);
 
   return (
-    <div className="collection ">
-      <Pagination connection={collection.products}>
-        {({nodes, isLoading, PreviousLink, NextLink}) => (
-          <>
-            <ProductsGrid products={nodes} categories={categories} />
-          </>
-        )}
-      </Pagination>
+    <div>
+      <ProductsGrid
+        products={collection.products.nodes}
+        categories={categories}
+      />
     </div>
   );
 }
@@ -282,9 +280,7 @@ function ProductItem({
         </div>
         <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[246px] h-[212px] mt-[-98px] -z-10 flex flex-col items-center">
           <h4 className="mt-[90px] font-bold text-[18px]">{product.title}</h4>
-          {/* {console.log(product)}
-          {console.log(product.tags)}
-          {console.log(product.tags[2])} */}
+
           <small className="font-semibold text-[14px] text-[#9C6EAA]">
             <Money data={product.priceRange.minVariantPrice} />
           </small>
