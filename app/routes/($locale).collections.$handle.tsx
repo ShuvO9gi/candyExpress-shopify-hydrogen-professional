@@ -11,7 +11,7 @@ import {useVariantUrl} from '~/lib/variants';
 import infoIcon from '../../public/icon_info.svg';
 import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 import type {
   Category,
@@ -111,85 +111,45 @@ function ProductsGrid({
   products: ProductItemFragment[];
   categories: Category[];
 }) {
-  // return '';
   const [scrollPositions, setScrollPositions] = useState<Array<number>>(
     Array(categories.length).fill(0),
   );
-  const [windowWidth, setWindowWidth] = useState(() => {
-    // Initialize windowWidth with the actual window width if available,
-    // Otherwise, default to 0
-    return typeof window !== 'undefined' ? window.innerWidth : 0;
-  });
 
-  useEffect(() => {
-    // Check if window is defined (i.e., we are in the browser environment)
-    if (typeof window !== 'undefined') {
-      const handleResize = () => {
-        setWindowWidth(window.innerWidth);
-      };
+  const containerRefs = useRef<Array<HTMLDivElement | null>>(
+    Array(categories.length).fill(null),
+  );
 
-      window.addEventListener('resize', handleResize);
+  const handleSwipe = (direction: 'left' | 'right', index: number) => {
+    if (!containerRefs.current[index]) return;
 
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-    }
-  }, []);
-
-  const handleScroll = (index: number, direction: 'left' | 'right') => {
-    // Check if window is defined (i.e., we are in the browser environment)
-    if (typeof window !== 'undefined') {
-      const scrollContainer = document.getElementById(
-        `slider-container-${index}`,
-      );
-      if (!scrollContainer) return;
-
-      // Calculate the scroll amount based on the width of products
-      const numProductsPerSlide = calculateNumProductsPerSlide(windowWidth);
-      const scrollAmount =
-        direction === 'left'
-          ? -numProductsPerSlide * getProductWidth()
-          : numProductsPerSlide * getProductWidth();
-
-      // Apply smooth scrolling animation
-      scrollContainer.style.transition = 'transform 0.5s ease-in-out';
-      scrollContainer.scrollLeft += scrollAmount;
-
-      // Update scroll position after animation completes
-      setTimeout(() => {
-        setScrollPositions((prevScrollPositions) => {
-          const updatedPositions = [...prevScrollPositions];
-          updatedPositions[index] = scrollContainer.scrollLeft;
-          return updatedPositions;
-        });
-
-        // Remove transition to avoid affecting subsequent scrolls
-        scrollContainer.style.transition = 'none';
-      }, 500);
-    }
+    const container = containerRefs.current[index];
+    const scrollAmount = direction === 'left' ? -100 : 100;
+    container!.scrollLeft += scrollAmount;
   };
 
-  // Function to calculate the number of products to display per slide based on the screen width
-  const calculateNumProductsPerSlide = (width: number) => {
-    if (width >= 1280) {
-      return 5; // Display 5 products per slide for screens wider than or equal to 1280px
-    } else if (width >= 1024) {
-      return 4; // Display 4 products per slide for screens wider than or equal to 1024px
-    } else if (width >= 768) {
-      return 3; // Display 3 products per slide for screens wider than or equal to 768px
-    } else {
-      return 2; // Display 2 products per slide for screens narrower than 768px
-    }
-  };
+  const handleTouchStart = (
+    index: number,
+    e: React.TouchEvent<HTMLDivElement>,
+  ) => {
+    const touchStartX = e.touches[0].clientX;
 
-  // Function to get the width of a single product element
-  const getProductWidth = () => {
-    const productElement = document.querySelector('.product-item');
-    if (productElement) {
-      return productElement.clientWidth;
-    } else {
-      return 0; // Default to 0 if product element is not found
-    }
+    const handleTouchMove = (e: TouchEvent) => {
+      const touchEndX = e.touches[0].clientX;
+      const difference = touchStartX - touchEndX;
+
+      if (Math.abs(difference) > 50) {
+        const direction = difference > 0 ? 'right' : 'left';
+        handleSwipe(direction, index);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
   };
 
   return (
@@ -199,44 +159,39 @@ function ProductsGrid({
           product.tags.includes(category.tag_name),
         );
 
-        return filteredProducts.length ? (
+        return (
           <div key={category.tag_name}>
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-4xl font-bold">{category.display_name}</h1>
               <div className="flex">
-                <button onClick={() => handleScroll(index, 'left')}>
+                <button onClick={() => handleSwipe('left', index)}>
                   <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
                 </button>
-                <button onClick={() => handleScroll(index, 'right')}>
+                <button onClick={() => handleSwipe('right', index)}>
                   <img src={rightArrow} alt="Right" className="w-8 h-8" />
                 </button>
               </div>
             </div>
 
             <div
+              ref={(ref) => (containerRefs.current[index] = ref)}
               className="slider-container"
-              id={`slider-container-${index}`}
+              onTouchStart={(e) => handleTouchStart(index, e)}
               style={{
-                overflowX: 'hidden',
+                display: 'flex',
+                overflowX: 'auto',
                 whiteSpace: 'nowrap',
-                transition: 'transform 0.5s ease-in-out',
+                scrollBehavior: 'smooth',
               }}
             >
               {filteredProducts.map((product, idx) => (
-                <div
-                  key={`${product.id}-${idx}`}
-                  className="product-item" // Add class name for product items
-                  style={{display: 'inline-block', marginRight: '10px'}}
-                >
-                  <ProductItem
-                    product={product}
-                    loading={idx < 8 ? 'eager' : undefined}
-                  />
+                <div key={`${product.id}-${idx}`} style={{marginRight: '10px'}}>
+                  <ProductItem product={product} />
                 </div>
               ))}
             </div>
           </div>
-        ) : null;
+        );
       })}
     </div>
   );
