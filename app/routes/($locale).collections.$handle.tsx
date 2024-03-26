@@ -111,45 +111,36 @@ function ProductsGrid({
   products: ProductItemFragment[];
   categories: Category[];
 }) {
-  const [scrollPositions, setScrollPositions] = useState<Array<number>>(
-    Array(categories.length).fill(0),
-  );
-
   const containerRefs = useRef<Array<HTMLDivElement | null>>(
     Array(categories.length).fill(null),
   );
+
+  const touchStartX = useRef<number>(0);
 
   const handleSwipe = (direction: 'left' | 'right', index: number) => {
     if (!containerRefs.current[index]) return;
 
     const container = containerRefs.current[index];
-    const scrollAmount = direction === 'left' ? -100 : 100;
+    const scrollAmount = direction === 'left' ? -300 : 300;
     container!.scrollLeft += scrollAmount;
   };
 
-  const handleTouchStart = (
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (
     index: number,
     e: React.TouchEvent<HTMLDivElement>,
   ) => {
-    const touchStartX = e.touches[0].clientX;
+    const container = containerRefs.current[index];
+    const touchEndX = e.touches[0].clientX;
+    const difference = touchStartX.current - touchEndX;
 
-    const handleTouchMove = (e: TouchEvent) => {
-      const touchEndX = e.touches[0].clientX;
-      const difference = touchStartX - touchEndX;
-
-      if (Math.abs(difference) > 50) {
-        const direction = difference > 0 ? 'right' : 'left';
-        handleSwipe(direction, index);
-      }
-    };
-
-    const handleTouchEnd = () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
-
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('touchend', handleTouchEnd);
+    if (Math.abs(difference) > 50) {
+      const direction = difference > 0 ? 'right' : 'left';
+      handleSwipe(direction, index);
+    }
   };
 
   return (
@@ -176,7 +167,8 @@ function ProductsGrid({
             <div
               ref={(ref) => (containerRefs.current[index] = ref)}
               className="slider-container"
-              onTouchStart={(e) => handleTouchStart(index, e)}
+              onTouchStart={handleTouchStart}
+              onTouchMove={(e) => handleTouchMove(index, e)}
               style={{
                 display: 'flex',
                 overflowX: 'auto',
