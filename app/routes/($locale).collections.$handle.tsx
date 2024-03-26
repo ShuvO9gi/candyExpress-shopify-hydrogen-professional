@@ -150,6 +150,8 @@ function ProductsGrid({
           product.tags.includes(category.tag_name),
         );
 
+        if (!filteredProducts.length) return null;
+
         return (
           <div key={category.tag_name}>
             <div className="flex justify-between items-center mb-8">
@@ -171,7 +173,7 @@ function ProductsGrid({
               onTouchMove={(e) => handleTouchMove(index, e)}
               style={{
                 display: 'flex',
-                overflowX: 'auto',
+                overflowX: 'hidden',
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
               }}
