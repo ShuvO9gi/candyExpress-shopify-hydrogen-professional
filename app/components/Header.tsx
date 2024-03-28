@@ -14,7 +14,7 @@ type Viewport = 'desktop' | 'mobile';
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="header mt-7 mb-7 ml-[1px] h-[50px] w-full p-0 bg-transparent relative">
+    <header className="header mt-[30px] mb-7 ml-[1px] h-[50px] w-full p-0 bg-transparent">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
         <strong className="ml-36 absolute top-2">
           <img src={page_logo} alt="page_logo" width={102} height={48} />
