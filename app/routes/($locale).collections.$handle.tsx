@@ -154,9 +154,9 @@ function ProductsGrid({
 
         return (
           <div key={category.tag_name}>
-            <div className="flex justify-between items-center mb-8">
-              <h1 className="text-4xl font-bold">{category.display_name}</h1>
-              <div className="flex">
+            <div className="flex justify-between items-center md:mb-8 mb-4">
+              <h1 className="text-3xl font-bold">{category.display_name}</h1>
+              <div className="hidden md:flex">
                 <button onClick={() => handleSwipe('left', index)}>
                   <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
                 </button>
@@ -202,7 +202,7 @@ function ProductItem({
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
   return (
-    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[164px] h-[310px]">
+    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[164px] h-[250px]">
       <Link
         className="flex flex-col items-center product-item"
         key={product.id}
