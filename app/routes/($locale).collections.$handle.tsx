@@ -204,7 +204,7 @@ function ProductItem({
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
   return (
-    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[164px] h-[250px]">
+    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[164px] h-[230px]">
       <Link
         className="flex flex-col items-center product-item"
         key={product.id}
