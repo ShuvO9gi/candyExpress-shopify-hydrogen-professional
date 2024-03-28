@@ -181,7 +181,7 @@ function ProductsGrid({
               }}
             >
               {filteredProducts.map((product, idx) => (
-                <div key={`${product.id}-${idx}`} className="mx-2 md:mr-5">
+                <div key={`${product.id}-${idx}`} className=" md:mr-5">
                   <ProductItem product={product} />
                 </div>
               ))}
