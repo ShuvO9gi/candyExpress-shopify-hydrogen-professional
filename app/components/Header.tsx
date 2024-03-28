@@ -4,7 +4,7 @@ import type {HeaderQuery} from 'storefrontapi.generated';
 import type {LayoutProps} from './Layout';
 import {useRootLoaderData} from '~/root';
 import page_logo from '../../public/page_logo.svg';
-import cart_sign from '../../public/cart_logo.svg';
+import cart_black_logo from '../../public/cart_black_logo.svg';
 import hamburger_icon from '../../public/hamburger_icon.svg';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
@@ -14,11 +14,10 @@ type Viewport = 'desktop' | 'mobile';
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="header mt-[30px] h-[94px] w-full p-0 bg-transparent relative">
+    <header className="header mt-7 mb-7 ml-[1px] h-[50px] w-full p-0 bg-transparent relative">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        {/* <strong>{shop.name}</strong> */}
-        <strong className="top-6 ml-5 absolute">
-          <img src={page_logo} alt="page_logo" width={86} height={46} />
+        <strong className="ml-36 absolute top-2">
+          <img src={page_logo} alt="page_logo" width={102} height={48} />
         </strong>
       </NavLink>
       <HeaderMenu
@@ -96,7 +95,10 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="flex flex-col items-end w-full" role="navigation">
+    <nav
+      className="flex justify-between w-[83%] h-[64%] ml-8"
+      role="navigation"
+    >
       <HeaderMenuMobileToggle />
       {/* <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         <Suspense fallback="Sign in">
@@ -113,17 +115,12 @@ function HeaderCtas({
 
 function HeaderMenuMobileToggle() {
   return (
-    <div className="flex justify-end w-full h-[50px] bg-[#C7F0BD]">
-      <p className="font-normal text-sm text-[#6E4695] w-[216px] text-end mr-3 flex content-end items-center">
-        Bestil indenfor 1 time og 55 min og vi afsender i dag
-      </p>
-      <a
-        className="header-menu-mobile-toggle flex justify-center w-[50px] h-[50px] bg-[#A9DDD6]"
-        href="#mobile-menu-aside"
-      >
-        <img src={hamburger_icon} alt="toggle_icon" width={22} height={16} />
-      </a>
-    </div>
+    <a
+      className="header-menu-mobile-toggle flex justify-center"
+      href="#mobile-menu-aside"
+    >
+      <img src={hamburger_icon} alt="toggle_icon" width={22} height={16} />
+    </a>
   );
 }
 
@@ -133,14 +130,12 @@ function HeaderMenuMobileToggle() {
 
 function CartBadge({count}: {count: number}) {
   return (
-    <div className="w-[50px] h-11 bg-[#6E4695] rounded-bl-2xl relative">
-      <div className="w-9 h-8 mt-1 ml-[10px] relative">
-        <a className="absolute top-[10px]" href="#cart-aside">
-          <img src={cart_sign} alt="cart_logo" width={17} height={17} />
-        </a>
-        <div className="w-[22px] h-[22px] bg-[#FFAD05] rounded-full absolute top-0 left-[14px] text-white font-bold text-lg flex justify-center items-center">
-          {count}
-        </div>
+    <div className="w-9 h-8 relative">
+      <a className="absolute top-4" href="#cart-aside">
+        <img src={cart_black_logo} alt="cart_logo" width={17} height={17} />
+      </a>
+      <div className="w-[22px] h-[22px] bg-[#FFAD05] rounded-full absolute top-[2px] left-[14px] text-white font-bold text-lg flex justify-center items-center">
+        {count}
       </div>
     </div>
   );
