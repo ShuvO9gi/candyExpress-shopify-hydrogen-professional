@@ -155,7 +155,9 @@ function ProductsGrid({
         return (
           <div key={category.tag_name}>
             <div className="flex justify-between items-center md:mb-8 mb-4">
-              <h1 className="text-3xl font-bold">{category.display_name}</h1>
+              <h1 className="md:text-4xl text-2xl font-bold">
+                {category.display_name}
+              </h1>
               <div className="hidden md:flex">
                 <button onClick={() => handleSwipe('left', index)}>
                   <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
@@ -209,9 +211,9 @@ function ProductItem({
         prefetch="intent"
         to={variantUrl}
       >
-        <div className="mt-0.5 w-[150px] h-[150px] md:w-[186px] md:h-[186px] relative">
+        <div className="mt-0.5 w-[120px] h-[120px] md:w-[186px] md:h-[186px] relative">
           <img
-            className="[&&]:w-[20px] [&&]:h-[20px] mt-[-2px] ml-[136px] md:ml-[170px] absolute"
+            className="[&&]:w-[20px] [&&]:h-[20px] mt-[-2px] ml-[116px] md:ml-[170px] absolute"
             src={infoIcon}
             alt="image_import"
           />
@@ -227,7 +229,7 @@ function ProductItem({
             />
           )}
         </div>
-        <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[164px] h-[127px] md:w-[246px] md:h-[212px] md:mt-[-98px] mt-[-50px] -z-10 flex flex-col items-center">
+        <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[144px] h-[130px] md:w-[246px] md:h-[212px] md:mt-[-98px] mt-[-50px] -z-10 flex flex-col items-center">
           <h4 className="md:mt-[90px] mt-[40px] font-bold md:text-[18px] text-[14px]">
             {product.title}
           </h4>
@@ -235,7 +237,7 @@ function ProductItem({
           <small className="font-semibold md:text-[14px] text-[12px] text-[#9C6EAA]">
             <Money data={product.priceRange.minVariantPrice} />
           </small>
-          <button className="w-[144px] md:w-[206px] h-[50px] rounded-full border-0 bg-[#FFAD05] mt-[10px] mb-[20px] font-bold md:text-xl text-sm text-white tracking-wide">
+          <button className="w-[124px] md:w-[206px] h-[50px] py-1 rounded-full border-0 bg-[#FFAD05] mt-[10px] mb-[20px] font-bold md:text-xl text-sm text-white tracking-wide">
             PUT I KURV
           </button>
         </div>
