@@ -179,7 +179,7 @@ function ProductsGrid({
               }}
             >
               {filteredProducts.map((product, idx) => (
-                <div key={`${product.id}-${idx}`} style={{marginRight: '10px'}}>
+                <div key={`${product.id}-${idx}`} className="mx-2 md:mr-5">
                   <ProductItem product={product} />
                 </div>
               ))}
@@ -202,16 +202,16 @@ function ProductItem({
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
   return (
-    <div className="flex justify-center w-[246px] h-[310px]">
+    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[164px] h-[310px]">
       <Link
         className="flex flex-col items-center product-item"
         key={product.id}
         prefetch="intent"
         to={variantUrl}
       >
-        <div className="mt-0.5 w-[186px] h-[186px] relative">
+        <div className="mt-0.5 w-[150px] h-[150px] md:w-[186px] md:h-[186px] relative">
           <img
-            className="[&&]:w-[20px] [&&]:h-[20px] mt-[-2px] ml-[170px] absolute"
+            className="[&&]:w-[20px] [&&]:h-[20px] mt-[-2px] ml-[136px] md:ml-[170px] absolute"
             src={infoIcon}
             alt="image_import"
           />
@@ -227,13 +227,15 @@ function ProductItem({
             />
           )}
         </div>
-        <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[246px] h-[212px] mt-[-98px] -z-10 flex flex-col items-center">
-          <h4 className="mt-[90px] font-bold text-[18px]">{product.title}</h4>
+        <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[164px] h-[127px] md:w-[246px] md:h-[212px] md:mt-[-98px] mt-[-50px] -z-10 flex flex-col items-center">
+          <h4 className="md:mt-[90px] mt-[40px] font-bold md:text-[18px] text-[14px]">
+            {product.title}
+          </h4>
 
-          <small className="font-semibold text-[14px] text-[#9C6EAA]">
+          <small className="font-semibold md:text-[14px] text-[12px] text-[#9C6EAA]">
             <Money data={product.priceRange.minVariantPrice} />
           </small>
-          <button className="w-[206px] h-[50px] rounded-full border-0 bg-[#FFAD05] mt-[10px] mb-[20px] font-bold text-xl text-white tracking-wide">
+          <button className="w-[144px] md:w-[206px] h-[50px] rounded-full border-0 bg-[#FFAD05] mt-[10px] mb-[20px] font-bold md:text-xl text-sm text-white tracking-wide">
             PUT I KURV
           </button>
         </div>
