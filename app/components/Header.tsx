@@ -3,6 +3,9 @@ import {Suspense} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import type {LayoutProps} from './Layout';
 import {useRootLoaderData} from '~/root';
+import page_logo from '../../public/page_logo.svg';
+import cart_black_logo from '../../public/cart_black_logo.svg';
+import hamburger_icon from '../../public/hamburger_icon.svg';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
@@ -11,9 +14,11 @@ type Viewport = 'desktop' | 'mobile';
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="header">
+    <header className="header mb-7 ml-[1px] h-[50px] w-full p-0 bg-transparent">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
+        <strong className="ml-36 absolute top-2">
+          <img src={page_logo} alt="" width={102} height={48} />
+        </strong>
       </NavLink>
       <HeaderMenu
         menu={menu}
@@ -90,16 +95,19 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="header-ctas" role="navigation">
+    <nav
+      className="flex justify-between w-[83%] h-[64%] ml-8"
+      role="navigation"
+    >
       <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
+      {/* <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
             {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
           </Await>
         </Suspense>
-      </NavLink>
-      <SearchToggle />
+      </NavLink> */}
+      {/* <SearchToggle /> */}
       <CartToggle cart={cart} />
     </nav>
   );
@@ -107,18 +115,30 @@ function HeaderCtas({
 
 function HeaderMenuMobileToggle() {
   return (
-    <a className="header-menu-mobile-toggle" href="#mobile-menu-aside">
-      <h3>☰</h3>
+    <a
+      className="header-menu-mobile-toggle flex justify-center"
+      href="#mobile-menu-aside"
+    >
+      <img src={hamburger_icon} alt="Toggle menu" width={22} height={16} />
     </a>
   );
 }
 
-function SearchToggle() {
+/* function SearchToggle() {
   return <a href="#search-aside">Search</a>;
-}
+} */
 
 function CartBadge({count}: {count: number}) {
-  return <a href="#cart-aside">Cart {count}</a>;
+  return (
+    <div className="w-9 h-8 relative">
+      <a className="absolute top-4" href="#cart-aside">
+        <img src={cart_black_logo} alt="Cart" width={17} height={17} />
+      </a>
+      <div className="w-[22px] h-[22px] bg-[#FFAD05] rounded-full absolute top-[2px] left-[14px] text-white font-bold text-lg flex justify-center items-center">
+        {count}
+      </div>
+    </div>
+  );
 }
 
 function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
