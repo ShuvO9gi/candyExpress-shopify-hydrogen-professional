@@ -33,14 +33,36 @@ export function Layout({
   header,
   isLoggedIn,
 }: LayoutProps) {
-  const [previous, setPrevious] = useState(true);
+  const [previous, setPrevious] = useState(false);
   const [productSelected, setProductSelected] = useState(true);
   const [searchCandy, setSearchCandy] = useState(true);
+  const [currentStep, setCurrentStep] = useState(1);
 
-  const handleToast = () => {
-    console.log('Hello');
-    const ms = 'Add';
-    return ms;
+  const handleNext = () => {
+    console.log(currentStep);
+
+    if (currentStep < 5) {
+      setCurrentStep((prev) => prev + 1);
+    }
+
+    if (currentStep > 1) {
+      setPrevious(true);
+    } else {
+      setPrevious(false);
+    }
+  };
+
+  const handlePrev = () => {
+    // if (currentStep < 0) {
+    //   setPrevious(false);
+    // }
+
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+      setPrevious(true);
+    } else if (currentStep == 1) {
+      setPrevious(false);
+    }
   };
 
   return (
@@ -100,13 +122,22 @@ export function Layout({
         <div className="w-[308px]">
           <div className="h-8 flex flex-nowrap items-center">
             <div className="w-full bg-[#D3B5D1] rounded-full h-1.5">
-              <div className="bg-white h-1.5 w-[20%] rounded-full"></div>
+              <div
+                id="progress-bar"
+                className="bg-white h-1.5 w-[20%] rounded-full"
+              ></div>
             </div>
-            <p className="text-nowrap text-white ml-1.5">Step 1 of 5</p>
+            <p className="text-nowrap text-white ml-1.5">
+              Step {currentStep} of 5
+            </p>
           </div>
           <div className="flex">
             {previous && (
-              <button className="flex justify-center items-center rounded-xl w-12 h-12 bg-white mr-4">
+              <button
+                id="progress-prev"
+                className="flex justify-center items-center rounded-xl w-12 h-12 bg-white mr-4"
+                onClick={() => handlePrev()}
+              >
                 <img
                   className=""
                   src={left_arrow}
@@ -118,8 +149,9 @@ export function Layout({
             )}
             <div className="w-[308px] h-12 rounded-xl bg-[#C7F0BD] pr-5 pl-11 py-3 flex justify-end">
               <button
+                id="progress-next"
                 className="font-bold text-base text-[#323232] w-full flex justify-between items-center"
-                onClick={() => handleToast()}
+                onClick={() => handleNext()}
               >
                 NEXT - SELECT CANDY
                 <img
