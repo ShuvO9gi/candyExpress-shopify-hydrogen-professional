@@ -131,7 +131,7 @@ function HeaderMenuMobileToggle() {
 function CartBadge({count}: {count: number}) {
   return (
     <div className="w-9 h-8 relative">
-      <a className="absolute top-4" href="#cart-aside">
+      <a className="absolute top-4" href="/cart">
         <img src={cart_black_logo} alt="Cart" width={17} height={17} />
       </a>
       <div className="w-[22px] h-[22px] bg-[#FFAD05] rounded-full absolute top-[2px] left-[14px] text-white font-bold text-lg flex justify-center items-center">
