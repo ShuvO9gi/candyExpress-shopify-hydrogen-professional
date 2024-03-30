@@ -14,7 +14,7 @@ type Viewport = 'desktop' | 'mobile';
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="header md:flex-col mb-7 md:mb-0 ml-[-1px] md:ml-0 h-[50px] md:h-[156px] w-full p-0 bg-transparent">
+    <header className="header md:flex-col mb-7 md:mb-0 h-[50px] md:h-[156px] w-full p-0 bg-transparent">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
         <div className="left-36 md:left-12 absolute top-2 md:top-6 w-[102px] h-12 md:w-44 md:h-24">
           <img src={page_logo} alt="" />
@@ -101,7 +101,7 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <nav
-      className="flex md:hidden justify-between w-[83%] h-[64%] ml-8"
+      className="flex md:absolute justify-between md:right-10 md:top-16 w-[83%] md:w-auto h-[64%] ml-8"
       role="navigation"
     >
       <HeaderMenuMobileToggle />
