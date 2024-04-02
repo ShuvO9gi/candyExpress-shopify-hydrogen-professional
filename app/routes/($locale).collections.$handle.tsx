@@ -6,6 +6,7 @@ import {
   Image,
   Money,
 } from '@shopify/hydrogen';
+import {useEffect, useRef, useState} from 'react';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import infoIcon from '../../public/icon_info.svg';
@@ -13,7 +14,8 @@ import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
 import plus from '../../public/plus_white_sign.svg';
 import minus from '../../public/minus_white_sign.svg';
-import {useEffect, useRef, useState} from 'react';
+import transportIcon from '../../public/transport_icon.svg';
+import watchIcon from '../../public/watch_icon.svg';
 
 import type {
   Category,
@@ -147,50 +149,75 @@ function ProductsGrid({
 
   return (
     <div>
-      {categories.map((category, index) => {
-        const filteredProducts = products.filter((product) =>
-          product.tags.includes(category.tag_name),
-        );
+      <div className="font-bold text-base text-[#323232]">
+        Mix today — Get it delivered by express.
+      </div>
+      <div className="flex justify-between items-center w-[90%] h-14 ml-5 mt-6 mb-2">
+        <div className="flex items-center">
+          <img src={transportIcon} alt="" width={39} height={38} />
+          <div className="flex flex-col ml-3 text-[#323232]">
+            <div className="font-bold text-[10px]">Gratis fragt</div>
+            <p className="w-[60%] font-normal text-[8px]">
+              Køb for over 399 kr. og få gratis fragt
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center">
+          <img src={watchIcon} alt="" />
+          <div className="flex flex-col ml-3 text-[#323232]">
+            <div className="font-bold text-[10px]">Vi sender i dag</div>
+            <p className="w-[60%] font-normal text-[8px]">
+              Bestil inden 14:00 (alle hverdage)
+            </p>
+          </div>
+        </div>
+      </div>
+      <div>
+        {categories.map((category, index) => {
+          const filteredProducts = products.filter((product) =>
+            product.tags.includes(category.tag_name),
+          );
 
-        if (!filteredProducts.length) return null;
+          if (!filteredProducts.length) return null;
 
-        return (
-          <div key={category.tag_name}>
-            <div className="flex justify-between items-center md:mb-8 mb-4">
-              <h1 className="md:text-4xl text-2xl font-bold">
-                {category.display_name}
-              </h1>
-              <div className="hidden md:flex">
-                <button onClick={() => handleSwipe('left', index)}>
-                  <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
-                </button>
-                <button onClick={() => handleSwipe('right', index)}>
-                  <img src={rightArrow} alt="Right" className="w-8 h-8" />
-                </button>
+          return (
+            <div key={category.tag_name}>
+              <div className="flex justify-between items-center md:mb-8 mb-4">
+                <h1 className="md:text-4xl text-2xl font-bold">
+                  {category.display_name}
+                </h1>
+                <div className="hidden md:flex">
+                  <button onClick={() => handleSwipe('left', index)}>
+                    <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
+                  </button>
+                  <button onClick={() => handleSwipe('right', index)}>
+                    <img src={rightArrow} alt="Right" className="w-8 h-8" />
+                  </button>
+                </div>
+              </div>
+
+              <div
+                ref={(ref) => (containerRefs.current[index] = ref)}
+                className="slider-container"
+                onTouchStart={handleTouchStart}
+                onTouchMove={(e) => handleTouchMove(index, e)}
+                style={{
+                  display: 'flex',
+                  overflowX: 'hidden',
+                  whiteSpace: 'nowrap',
+                  scrollBehavior: 'smooth',
+                }}
+              >
+                {filteredProducts.map((product, idx) => (
+                  <div key={`${product.id}-${idx}`} className=" md:mr-5">
+                    <ProductItem product={product} />
+                  </div>
+                ))}
               </div>
             </div>
-
-            <div
-              ref={(ref) => (containerRefs.current[index] = ref)}
-              className="slider-container"
-              onTouchStart={handleTouchStart}
-              onTouchMove={(e) => handleTouchMove(index, e)}
-              style={{
-                display: 'flex',
-                overflowX: 'hidden',
-                whiteSpace: 'nowrap',
-                scrollBehavior: 'smooth',
-              }}
-            >
-              {filteredProducts.map((product, idx) => (
-                <div key={`${product.id}-${idx}`} className=" md:mr-5">
-                  <ProductItem product={product} />
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
