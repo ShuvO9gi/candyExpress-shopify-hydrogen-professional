@@ -230,6 +230,8 @@ function ProductItem({
   loading?: 'eager' | 'lazy';
 }) {
   const [weightCalculation, setWeightCalculation] = useState(false);
+  const [quantity, setQuantity] = useState(6);
+  const [weight, setWeight] = useState(36);
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
@@ -237,9 +239,22 @@ function ProductItem({
     setWeightCalculation(true);
   };
 
-  const handleWeight = (e: any) => {
+  const deductWeight = (e: any) => {
     e.stopPropagation();
-    setWeightCalculation(false);
+    if (quantity > 6) {
+      setQuantity((prev) => prev - 6);
+      setWeight((prev) => prev - 36);
+    }
+
+    if (quantity === 6) {
+      setWeightCalculation(false);
+    }
+  };
+
+  const addWeight = (e: any) => {
+    e.stopPropagation();
+    setQuantity((prev) => prev + 6);
+    setWeight((prev) => prev + 36);
   };
 
   return (
@@ -306,23 +321,23 @@ function ProductItem({
             </small>
             <div className="flex justify-between items-center w-[124px] w-36 md:w-[206px] h-[50px] py-1 rounded-full border-0 bg-white mt-0.5 mb-[20px]">
               <div className="flex justify-center items-center w-6 h-6 rounded-full ml-1 bg-[#FFAD05]">
-                <button className="w-4 h-4" onClick={(e) => handleWeight(e)}>
+                <button className="w-4 h-4" onClick={(e) => deductWeight(e)}>
                   <img src={minus} alt="Subtract" width={16} height={16} />
                 </button>
               </div>
               <div className="flex flex-col items-center">
                 <div className="font-bold text-[10px] text-[#323232] text-center">
-                  Ca. 6 stk.
+                  Ca. {quantity} stk.
                 </div>
                 <div className="w-[125%] w-16 h-[1px] bg-[#D3B5D1]/[0.5]"></div>
                 <div className="font-normal text-[10px] text-[#323232] text-center">
-                  36 gram
+                  {weight} gram
                 </div>
               </div>
               <div className="flex justify-center items-center w-6 h-6 rounded-full mr-1 bg-[#FFAD05]">
-                <div className="w-4 h-4">
+                <button className="w-4 h-4" onClick={(e) => addWeight(e)}>
                   <img src={plus} alt="Add" width={16} height={16} />
-                </div>
+                </button>
               </div>
             </div>
           </div>
