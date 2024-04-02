@@ -202,28 +202,48 @@ function ProductItem({
   product: ProductItemFragment;
   loading?: 'eager' | 'lazy';
 }) {
-  const [weightCalculation, setWeightCalculation] = useState(true);
+  const [weightCalculation, setWeightCalculation] = useState(false);
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
+  const openWeightModal = () => {
+    setWeightCalculation(true);
+  };
+
+  const handleWeight = (e: any) => {
+    e.stopPropagation();
+    setWeightCalculation(false);
+  };
+
   return (
-    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[164px] h-[230px] relative">
-      <Link prefetch="intent" to={variantUrl}>
+    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[164px] h-[230px]">
+      {/* <Link prefetch="intent" to={variantUrl}>
         <img
-          className="[&&]:w-[20px] [&&]:h-[20px] absolute top-[0px] right-[18px] z-10"
+          className="w-[20px] [&&]:h-[20px] absolute top-[0px] right-[18px] z-10"
           src={infoIcon}
           alt="Details information"
         />
-      </Link>
-      <div className="flex flex-col items-center product-item" key={product.id}>
-        <div className="mt-0.5 w-[120px] h-[120px] md:w-[186px] md:h-[186px]">
-          {/* <Link prefetch="intent" to={variantUrl}>
+      </Link> */}
+      <div
+        className="flex flex-col items-center product-item"
+        key={product.id}
+        role="button"
+        onClick={() => openWeightModal()}
+        onKeyDown={() => openWeightModal()}
+        tabIndex={0}
+      >
+        <div className="mt-0.5 w-[120px] h-[120px] md:w-[186px] md:h-[186px] relative">
+          <Link
+            prefetch="intent"
+            to={variantUrl}
+            onClick={(e) => e.stopPropagation()}
+          >
             <img
-              className="[&&]:w-[20px] [&&]:h-[20px] mt-[-2px] ml-[116px] md:ml-[170px] absolute"
+              className="[&&]:w-[20px] [&&]:h-[20px] top-[-2px] left-[116px] md:left-[170px] absolute"
               src={infoIcon}
               alt="image_import"
             />
-          </Link> */}
+          </Link>
           {product.featuredImage && (
             <Image
               alt={product.featuredImage.altText || product.title}
@@ -231,12 +251,12 @@ function ProductItem({
               data={product.featuredImage}
               loading={loading}
               sizes="(min-width: 45em) 400px, 100vw"
-              className="p-2"
+              className="p-2 z-10"
             />
           )}
         </div>
         {!weightCalculation && (
-          <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[144px] h-[130px] md:w-[246px] md:h-[212px] md:mt-[-98px] mt-[-50px] -z-10 flex flex-col items-center">
+          <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[144px] h-[130px] md:w-[246px] md:h-[212px] md:mt-[-98px] mt-[-50px] flex flex-col items-center">
             <h4 className="md:mt-[90px] mt-[40px] font-bold md:text-[18px] text-[14px]">
               {product.title}
             </h4>
@@ -250,7 +270,7 @@ function ProductItem({
         )}
 
         {weightCalculation && (
-          <div className="bg-[#6E4695] rounded-[14px] w-[144px] h-[130px] md:w-[246px] md:h-[212px] md:mt-[-98px] mt-[-50px] -z-10 flex flex-col items-center">
+          <div className="bg-[#6E4695] rounded-[14px] w-[144px] h-[130px] md:w-[246px] md:h-[212px] md:mt-[-98px] mt-[-50px] flex flex-col items-center">
             <h4 className="md:mt-[90px] mt-[40px] font-bold md:text-[18px] text-[14px] text-white">
               {product.title}
             </h4>
@@ -259,16 +279,15 @@ function ProductItem({
             </small>
             <div className="flex justify-between items-center w-[124px] w-36 md:w-[206px] h-[50px] py-1 rounded-full border-0 bg-white mt-0.5 mb-[20px]">
               <div className="flex justify-center items-center w-6 h-6 rounded-full ml-1 bg-[#FFAD05]">
-                <div className="w-4 h-4">
+                <button className="w-4 h-4" onClick={(e) => handleWeight(e)}>
                   <img src={minus} alt="Subtract" width={16} height={16} />
-                </div>
-                {/* <div className="w-[2px] h-3 bg-white rotate-90 rounded-[0.5px]"></div> */}
+                </button>
               </div>
               <div className="flex flex-col items-center">
                 <div className="font-bold text-[10px] text-[#323232] text-center">
                   Ca. 6 stk.
                 </div>
-                <div className="w-[78px] w-16 h-[1px] bg-[#D3B5D1]/[0.5]"></div>
+                <div className="w-[125%] w-16 h-[1px] bg-[#D3B5D1]/[0.5]"></div>
                 <div className="font-normal text-[10px] text-[#323232] text-center">
                   36 gram
                 </div>
@@ -277,9 +296,6 @@ function ProductItem({
                 <div className="w-4 h-4">
                   <img src={plus} alt="Add" width={16} height={16} />
                 </div>
-
-                {/* <div className="w-[2px] h-3 bg-white rounded-[0.5px]"></div>
-                <div className="w-[2px] h-3 bg-white rotate-90 rounded-[0.5px]"></div> */}
               </div>
             </div>
           </div>
