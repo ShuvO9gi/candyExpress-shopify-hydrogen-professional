@@ -231,7 +231,7 @@ function ProductItem({
 }) {
   const [weightCalculation, setWeightCalculation] = useState(false);
   const [quantity, setQuantity] = useState(6);
-  const [weight, setWeight] = useState(36);
+  const [weight, setWeight] = useState(3);
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
@@ -243,7 +243,7 @@ function ProductItem({
     e.stopPropagation();
     if (quantity > 6) {
       setQuantity((prev) => prev - 6);
-      setWeight((prev) => prev - 36);
+      setWeight((prev) => prev - 3);
     }
 
     if (quantity === 6) {
@@ -254,7 +254,7 @@ function ProductItem({
   const addWeight = (e: any) => {
     e.stopPropagation();
     setQuantity((prev) => prev + 6);
-    setWeight((prev) => prev + 36);
+    setWeight((prev) => prev + 3);
   };
 
   return (
@@ -327,11 +327,11 @@ function ProductItem({
               </div>
               <div className="flex flex-col items-center">
                 <div className="font-bold text-[10px] text-[#323232] text-center">
-                  Ca. {quantity} stk.
+                  Ca. {quantity} {/* stk. */}pcs.
                 </div>
                 <div className="w-[125%] w-16 h-[1px] bg-[#D3B5D1]/[0.5]"></div>
                 <div className="font-normal text-[10px] text-[#323232] text-center">
-                  {weight} gram
+                  {weight} {/* gram */}DKK
                 </div>
               </div>
               <div className="flex justify-center items-center w-6 h-6 rounded-full mr-1 bg-[#FFAD05]">
