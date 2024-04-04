@@ -147,6 +147,9 @@ function ProductsGrid({
     }
   };
 
+  console.log(products);
+  console.log(categories);
+
   return (
     <div>
       <div className="font-bold text-base text-[#323232]">
@@ -231,9 +234,13 @@ function ProductItem({
 }) {
   const [weightCalculation, setWeightCalculation] = useState(false);
   const [quantity, setQuantity] = useState(6);
-  const [weight, setWeight] = useState(3);
+  const money = Number(product.priceRange.minVariantPrice.amount);
+  const [weight, setWeight] = useState(money);
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
+
+  // console.log(product);
+  // console.log(product.tags);
 
   const openWeightModal = () => {
     setWeightCalculation(true);
@@ -243,7 +250,7 @@ function ProductItem({
     e.stopPropagation();
     if (quantity > 6) {
       setQuantity((prev) => prev - 6);
-      setWeight((prev) => prev - 3);
+      setWeight((prev: any) => prev - money);
     }
 
     if (quantity === 6) {
@@ -254,7 +261,7 @@ function ProductItem({
   const addWeight = (e: any) => {
     e.stopPropagation();
     setQuantity((prev) => prev + 6);
-    setWeight((prev) => prev + 3);
+    setWeight((prev) => prev + money);
   };
 
   return (
