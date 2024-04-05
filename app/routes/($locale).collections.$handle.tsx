@@ -16,6 +16,8 @@ import plus from '../../public/plus_white_sign.svg';
 import minus from '../../public/minus_white_sign.svg';
 import transportIcon from '../../public/transport_icon.svg';
 import watchIcon from '../../public/watch_icon.svg';
+import chocolateIcon from '../../public/chocolate_icon.svg';
+import hygienicIcon from '../../public/hygienic_icon.svg';
 
 import type {
   Category,
@@ -152,15 +154,16 @@ function ProductsGrid({
 
   return (
     <div>
-      <div className="font-bold text-base text-[#323232]">
-        Mix today — Get it delivered by express.
+      <div className="text-base md:text-4xl text-[#323232]">
+        <span className="font-bold">Mix today</span> — Get it delivered by
+        express.
       </div>
-      <div className="flex justify-between items-center w-[90%] h-14 ml-5 mt-6 mb-2">
+      <div className="flex justify-between items-center w-[90%] md:w-full h-14 ml-5 md:ml-1 mt-6 mb-2 md:mb-7 md:mr-2">
         <div className="flex items-center">
           <img src={transportIcon} alt="" width={39} height={38} />
           <div className="flex flex-col ml-3 text-[#323232]">
-            <div className="font-bold text-[10px]">Gratis fragt</div>
-            <p className="w-[60%] font-normal text-[8px]">
+            <div className="font-bold text-[10px] md:text-sm">Gratis fragt</div>
+            <p className="w-[60%] md:w-fit font-normal text-[8px] md:text-xs">
               Køb for over 399 kr. og få gratis fragt
             </p>
           </div>
@@ -168,9 +171,31 @@ function ProductsGrid({
         <div className="flex items-center">
           <img src={watchIcon} alt="" />
           <div className="flex flex-col ml-3 text-[#323232]">
-            <div className="font-bold text-[10px]">Vi sender i dag</div>
-            <p className="w-[60%] font-normal text-[8px]">
+            <div className="font-bold text-[10px] md:text-sm">
+              Vi sender i dag
+            </div>
+            <p className="w-[60%] md:w-fit font-normal text-[8px] md:text-xs">
               Bestil inden 14:00 (alle hverdage)
+            </p>
+          </div>
+        </div>
+        <div className="hidden md:flex items-center">
+          <img src={chocolateIcon} alt="" />
+          <div className="flex flex-col ml-3 text-[#323232]">
+            <div className="font-bold text-[10px] md:text-sm">Kæmpe udvalg</div>
+            <p className="w-[60%] md:w-fit font-normal text-[8px] md:text-xs">
+              &#43;450 varianter direkte fra fabrikken
+            </p>
+          </div>
+        </div>
+        <div className="hidden md:flex items-center">
+          <img src={hygienicIcon} alt="" />
+          <div className="flex flex-col ml-3 text-[#323232]">
+            <div className="font-bold text-[10px] md:text-sm">
+              100% hygiejnisk
+            </div>
+            <p className="w-[60%] md:w-fit font-normal text-[8px] md:text-xs">
+              Pakket med handsker og hårnet
             </p>
           </div>
         </div>
@@ -234,8 +259,8 @@ function ProductItem({
 }) {
   const [weightCalculation, setWeightCalculation] = useState(false);
   const [quantity, setQuantity] = useState(6);
-  const money = Number(product.priceRange.minVariantPrice.amount);
-  const [weight, setWeight] = useState(money);
+  const amount = Number(product.priceRange.minVariantPrice.amount);
+  const [weight, setWeight] = useState(amount);
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
@@ -250,7 +275,7 @@ function ProductItem({
     e.stopPropagation();
     if (quantity > 6) {
       setQuantity((prev) => prev - 6);
-      setWeight((prev: any) => prev - money);
+      setWeight((prev: any) => prev - amount);
     }
 
     if (quantity === 6) {
@@ -261,18 +286,11 @@ function ProductItem({
   const addWeight = (e: any) => {
     e.stopPropagation();
     setQuantity((prev) => prev + 6);
-    setWeight((prev) => prev + money);
+    setWeight((prev) => prev + amount);
   };
 
   return (
     <div className="flex justify-center md:w-[246px] md:h-[310px] w-[164px] h-[230px]">
-      {/* <Link prefetch="intent" to={variantUrl}>
-        <img
-          className="w-[20px] [&&]:h-[20px] absolute top-[0px] right-[18px] z-10"
-          src={infoIcon}
-          alt="Details information"
-        />
-      </Link> */}
       <div
         className="flex flex-col items-center product-item"
         key={product.id}
@@ -300,7 +318,7 @@ function ProductItem({
               data={product.featuredImage}
               loading={loading}
               sizes="(min-width: 45em) 400px, 100vw"
-              className="p-2 z-10"
+              className="p-2"
             />
           )}
         </div>
@@ -326,22 +344,22 @@ function ProductItem({
             <small className="font-semibold md:text-[14px] text-[12px] text-[#D3B5D1]">
               <Money data={product.priceRange.minVariantPrice} />
             </small>
-            <div className="flex justify-between items-center w-[124px] w-36 md:w-[206px] h-[50px] py-1 rounded-full border-0 bg-white mt-0.5 mb-[20px]">
-              <div className="flex justify-center items-center w-6 h-6 rounded-full ml-1 bg-[#FFAD05]">
+            <div className="flex justify-between items-center w-[124px] md:w-[206px] h-[50px] py-1 rounded-full border-0 bg-white mt-0.5 mb-[20px]">
+              <div className="flex justify-center items-center w-6 md:w-[26px] h-6 md:h-[26px] rounded-full ml-1 md:ml-3 bg-[#FFAD05]">
                 <button className="w-4 h-4" onClick={(e) => deductWeight(e)}>
                   <img src={minus} alt="Subtract" width={16} height={16} />
                 </button>
               </div>
               <div className="flex flex-col items-center">
-                <div className="font-bold text-[10px] text-[#323232] text-center">
+                <div className="font-bold text-[10px] md:text-sm text-[#323232] text-center">
                   Ca. {quantity} {/* stk. */}pcs.
                 </div>
-                <div className="w-[125%] w-16 h-[1px] bg-[#D3B5D1]/[0.5]"></div>
-                <div className="font-normal text-[10px] text-[#323232] text-center">
+                <div className="w-14 md:w-20 h-[1px] bg-[#D3B5D1]/[0.5]"></div>
+                <div className="font-normal text-[10px] md:text-sm text-[#323232] text-center">
                   {weight} {/* gram */}DKK
                 </div>
               </div>
-              <div className="flex justify-center items-center w-6 h-6 rounded-full mr-1 bg-[#FFAD05]">
+              <div className="flex justify-center items-center w-6 md:w-[26px] h-6 md:h-[26px] rounded-full mr-1 md:mr-3 bg-[#FFAD05]">
                 <button className="w-4 h-4" onClick={(e) => addWeight(e)}>
                   <img src={plus} alt="Add" width={16} height={16} />
                 </button>
