@@ -102,7 +102,7 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <nav
-      className="flex md:absolute items-center md:right-10 md:top-16 w-full md:w-auto h-full md:h-auto ml-7"
+      className="flex md:absolute items-center justify-between md:right-10 md:top-16 w-full md:w-auto h-full md:h-auto ml-7"
       role="navigation"
     >
       <HeaderMenuMobileToggle />

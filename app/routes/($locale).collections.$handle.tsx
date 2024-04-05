@@ -215,11 +215,23 @@ function ProductsGrid({
                   {category.display_name}
                 </h1>
                 <div className="hidden md:flex">
-                  <button onClick={() => handleSwipe('left', index)}>
-                    <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
+                  <button
+                    className="flex justify-center items-center w-8 h-8 rounded-full bg-[#C7F0BD] mr-2"
+                    onClick={() => handleSwipe('left', index)}
+                  >
+                    <img src={leftArrow} alt="Left" width={9} height={14} />
                   </button>
-                  <button onClick={() => handleSwipe('right', index)}>
+                  {/* <button onClick={() => handleSwipe('left', index)}>
+                    <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
+                  </button> */}
+                  {/* <button onClick={() => handleSwipe('right', index)}>
                     <img src={rightArrow} alt="Right" className="w-8 h-8" />
+                  </button> */}
+                  <button
+                    className="flex justify-center items-center w-8 h-8 rounded-full bg-[#C7F0BD]"
+                    onClick={() => handleSwipe('right', index)}
+                  >
+                    <img src={rightArrow} alt="Right" width={9} height={14} />
                   </button>
                 </div>
               </div>
@@ -237,7 +249,10 @@ function ProductsGrid({
                 }}
               >
                 {filteredProducts.map((product, idx) => (
-                  <div key={`${product.id}-${idx}`} className=" md:mr-5">
+                  <div
+                    key={`${product.id}-${idx}`}
+                    className="mb-6 md:mb-12 md:mr-5"
+                  >
                     <ProductItem product={product} />
                   </div>
                 ))}
