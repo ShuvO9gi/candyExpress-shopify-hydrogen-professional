@@ -1,5 +1,5 @@
 import {Await, NavLink} from '@remix-run/react';
-import {Suspense} from 'react';
+import {Suspense, useState} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import type {LayoutProps} from './Layout';
 import {useRootLoaderData} from '~/root';
@@ -7,6 +7,7 @@ import page_logo from '../../public/page_logo.svg';
 import cart_black_logo from '../../public/cart_black_logo.svg';
 import hamburger_icon from '../../public/hamburger_icon.svg';
 import searchIcon from '../../public/search_black_icon.svg';
+import downArrow from '../../public/down_arrow.svg';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
@@ -17,7 +18,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
   return (
     <header className="header md:flex-col mb-7 -mt-2 md:mb-0 h-[50px] md:h-[156px] w-full p-0 bg-white md:bg-transparent">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <div className="left-36 md:left-12 absolute top-2 md:top-6 w-[102px] h-12 md:w-44 md:h-24">
+        <div className="left-32 left md:left-12 absolute top-2 md:top-6 w-[102px] h-12 md:w-44 md:h-24">
           <img src={page_logo} alt="" />
         </div>
       </NavLink>
@@ -26,6 +27,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
       </div>
       <HeaderMenu
         menu={menu}
+        cart={cart}
         viewport="desktop"
         primaryDomainUrl={header.shop.primaryDomain.url}
       />
@@ -38,13 +40,16 @@ export function HeaderMenu({
   menu,
   primaryDomainUrl,
   viewport,
+  cart,
 }: {
   menu: HeaderProps['header']['menu'];
   primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
   viewport: Viewport;
+  cart: HeaderProps['cart'];
 }) {
   const {publicStoreDomain} = useRootLoaderData();
-  const className = `header-menu-${viewport} md:flex md:justify-between md:items-center md:w-full md:h-[76px] bg-[#F7F7F7] md:ml-0 md:gap-0`;
+  const [submenu, setSubmenu] = useState(false);
+  const className = `header-menu-${viewport} md:flex md:justify-between md:items-center md:w-full md:h-[76px] bg-[#F7F7F7] ml-0 md:gap-0`;
 
   function closeAside(event: React.MouseEvent<HTMLAnchorElement>) {
     if (viewport === 'mobile') {
@@ -55,7 +60,7 @@ export function HeaderMenu({
 
   return (
     <nav className={className} role="navigation">
-      <div className="hidden md:flex justify-between w-full md:ml-64 md:mr-20">
+      <div className="hidden md:flex justify-between w-fit md:ml-80 md:mr-20">
         {viewport === 'mobile' && (
           <NavLink
             end
@@ -78,17 +83,56 @@ export function HeaderMenu({
               ? new URL(item.url).pathname
               : item.url;
           return (
-            <NavLink
-              className="header-menu-item font-bold"
-              end
+            <div
+              className="flex items-center content-center justify-center flex-wrap relative group"
               key={item.id}
-              onClick={closeAside}
-              prefetch="intent"
-              style={activeLinkStyle}
-              to={url}
             >
-              {item.title}
-            </NavLink>
+              <NavLink
+                className="header-menu-item font-bold text-[17px] hover:no-underline px-5"
+                end
+                key={item.id}
+                onClick={closeAside}
+                prefetch="intent"
+                style={activeLinkStyle}
+                to={url}
+              >
+                {item.title}
+              </NavLink>
+              {item.title == 'Kurv' && <CartToggle cart={cart} />}
+              {item.items.length > 0 && (
+                <>
+                  <button
+                    className="flex items-center w-3 h-3 mt-1 -ml-4"
+                    onClick={() => {
+                      setSubmenu(true);
+                      if (submenu) {
+                        setSubmenu(false);
+                      }
+                    }}
+                  >
+                    <img
+                      className="rounded-none"
+                      src={downArrow}
+                      alt="Show submenu"
+                      width={10}
+                      height={8}
+                    />
+                  </button>
+                  {/* {submenu && ( */}
+                  <ul className="w-44 absolute top-[100%] left-[0%] bg-white rounded-xl border-2 border-[#c7f0bd] border-solid invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-[opacity, visibility] ease duration-500">
+                    {item.items.map((sub) => (
+                      <li
+                        key={sub.id}
+                        className="font-bold text-base hover:block hover:bg-slate-200 p-2 mb-0 cursor-pointer"
+                      >
+                        {sub.title}
+                      </li>
+                    ))}
+                  </ul>
+                  {/* )} */}
+                </>
+              )}
+            </div>
           );
         })}
       </div>
@@ -102,7 +146,7 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <nav
-      className="flex md:absolute items-center md:right-10 md:top-16 w-full md:w-auto h-full md:h-auto ml-7"
+      className="flex md:hidden items-center justify-between w-full h-full ml-4 mr-4 mt-5"
       role="navigation"
     >
       <HeaderMenuMobileToggle />
@@ -113,8 +157,10 @@ function HeaderCtas({
           </Await>
         </Suspense>
       </NavLink> */}
-      <SearchToggle />
-      <CartToggle cart={cart} />
+      <div className="flex">
+        <SearchToggle />
+        <CartToggle cart={cart} />
+      </div>
     </nav>
   );
 }
@@ -122,7 +168,7 @@ function HeaderCtas({
 function HeaderMenuMobileToggle() {
   return (
     <a
-      className="header-menu-mobile-toggle flex md:hidden justify-center mt-5"
+      className="header-menu-mobile-toggle flex md:hidden justify-center"
       href="#mobile-menu-aside"
     >
       <img
@@ -138,7 +184,7 @@ function HeaderMenuMobileToggle() {
 
 function SearchToggle() {
   return (
-    <a className="flex md:hidden ml-[250px] mt-5" href="#search-aside">
+    <a className="flex md:hidden" href="#search-aside">
       <img
         className="rounded-none"
         src={searchIcon}
@@ -152,8 +198,8 @@ function SearchToggle() {
 
 function CartBadge({count}: {count: number}) {
   return (
-    <div className="w-9 h-8 ml-4 md:ml-0 relative md:static">
-      <a className="absolute top-4" href="#cart-aside">
+    <div className="w-9 h-8 ml-4 md:-ml-4 relative md:relative flex items-center">
+      <a className="md:static" href="/cart">
         <img
           className="rounded-none"
           src={cart_black_logo}
@@ -162,7 +208,7 @@ function CartBadge({count}: {count: number}) {
           height={17}
         />
       </a>
-      <div className="w-[22px] md:w-6 h-[22px] md:h-6 bg-[#FFAD05] rounded-full absolute top-[2px] left-[14px] text-white font-bold text-lg flex justify-center items-center">
+      <div className="w-[22px] md:w-6 h-[22px] md:h-6 bg-[#FFAD05] rounded-full absolute -top-1 left-[14px] text-white font-bold text-lg flex justify-center items-center">
         {count}
       </div>
     </div>
