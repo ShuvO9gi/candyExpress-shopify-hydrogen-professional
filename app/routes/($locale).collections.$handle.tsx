@@ -133,13 +133,16 @@ function ProductsGrid({
     index: number,
     e: React.TouchEvent<HTMLDivElement>,
   ) => {
-    const container = containerRefs.current[index];
-    const touchEndX = e.touches[0].clientX;
-    const difference = touchStartX.current - touchEndX;
+    if (!containerRefs.current[index]) return;
 
-    if (Math.abs(difference) > 50) {
-      const direction = difference > 0 ? 'right' : 'left';
-      handleSwipe(direction, index);
+    const touchEndX = e.touches[0].clientX;
+
+    if (touchStartX.current - touchEndX > 50) {
+      handleSwipe('right', index);
+    }
+
+    if (touchStartX.current - touchEndX < -50) {
+      handleSwipe('left', index);
     }
   };
 
@@ -204,7 +207,7 @@ function ProductItem({
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
   return (
-    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[164px] h-[230px]">
+    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[152px] h-[230px]">
       <Link
         className="flex flex-col items-center product-item"
         key={product.id}
