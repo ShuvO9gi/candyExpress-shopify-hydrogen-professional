@@ -18,7 +18,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
   return (
     <header className="header md:flex-col mb-7 -mt-2 md:mb-0 h-[50px] md:h-[156px] w-full p-0 bg-white md:bg-transparent">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <div className="left-32 left md:left-12 absolute top-2 md:top-6 w-[102px] h-12 md:w-44 md:h-24">
+        <div className="w-[102px] h-12 md:w-44 md:h-24 absolute top-2 left-[50%] translate-x-[-50%] md:translate-x-0  md:top-6 md:left-[5%]">
           <img src={page_logo} alt="" />
         </div>
       </NavLink>
@@ -49,7 +49,7 @@ export function HeaderMenu({
 }) {
   const {publicStoreDomain} = useRootLoaderData();
   const [submenu, setSubmenu] = useState(false);
-  const className = `header-menu-${viewport} md:flex md:justify-between md:items-center md:w-full md:h-[76px] bg-[#F7F7F7] ml-0 md:gap-0`;
+  const className = `header-menu-${viewport} md:flex md:justify-center md:items-center md:w-full md:h-[76px] bg-[#F7F7F7] ml-0 md:gap-0`;
 
   function closeAside(event: React.MouseEvent<HTMLAnchorElement>) {
     if (viewport === 'mobile') {
@@ -60,7 +60,7 @@ export function HeaderMenu({
 
   return (
     <nav className={className} role="navigation">
-      <div className="hidden md:flex justify-between w-fit md:ml-80 md:mr-20">
+      <div className="hidden md:flex justify-between w-fit">
         {viewport === 'mobile' && (
           <NavLink
             end
@@ -84,11 +84,11 @@ export function HeaderMenu({
               : item.url;
           return (
             <div
-              className="flex items-center content-center justify-center flex-wrap relative group"
+              className="flex items-center content-center justify-center relative group"
               key={item.id}
             >
               <NavLink
-                className="header-menu-item font-bold text-[17px] hover:no-underline px-5"
+                className="header-menu-item font-bold text-[17px] text-nowrap hover:no-underline px-5"
                 end
                 key={item.id}
                 onClick={closeAside}
