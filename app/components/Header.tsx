@@ -8,6 +8,7 @@ import cart_black_logo from '../../public/cart_black_logo.svg';
 import hamburger_icon from '../../public/hamburger_icon.svg';
 import searchIcon from '../../public/search_black_icon.svg';
 import downArrow from '../../public/down_arrow.svg';
+import closeIcon from '../../public/close_white_icon.svg';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
@@ -166,19 +167,77 @@ function HeaderCtas({
 }
 
 function HeaderMenuMobileToggle() {
+  const [showMobileNavigation, setShowMobileNavigation] = useState(false);
   return (
-    <a
-      className="header-menu-mobile-toggle flex lg:hidden justify-center"
-      href="#mobile-menu-aside"
-    >
-      <img
-        className="rounded-none"
-        src={hamburger_icon}
-        alt="Toggle menu"
-        width={20}
-        height={16}
-      />
-    </a>
+    <>
+      <button
+        className="header-menu-mobile-toggle flex lg:hidden justify-center group"
+        /* href="#mobile-menu-aside" */
+        onClick={() => setShowMobileNavigation(true)}
+      >
+        <img
+          className="rounded-none"
+          src={hamburger_icon}
+          alt="Toggle menu"
+          width={20}
+          height={16}
+        />
+      </button>
+      {showMobileNavigation && (
+        <div className="mobile-navigation fixed top-0 left-0 w-full h-screen bg-none z-[999]">
+          <div className="mobile_navigation_wrapper relative w-full h-screen pr-0 pl-0 pt-6 pb-12 bg-[url('../../public/mobile_navigation_bg.svg')] bg-[#6E4695] bg-cover overflow-auto translate-x-0 group-hover:translate-x-full transition-[transform] ease-in-out duration-300">
+            <button
+              className="flex items-center justify-center w-[50px] h-[50px] absolute top-0 right-0 bg-[#6E4695]"
+              onClick={() => {
+                setShowMobileNavigation(false);
+                console.log('close');
+              }}
+            >
+              <img src={closeIcon} alt="" width={16} height={16} />
+            </button>
+            <div className="absolute top-[22px] left-[26px]">
+              <img src={page_logo} alt="" width={86} height={46} />
+            </div>
+            <nav className="mt-40 flex justify-center">
+              <ul className="w-[78%]">
+                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm no-underline p-3.5 [&:not(:first-child)]:mt-5">
+                  <NavLink
+                    className="flex items-center pr-6 hover:no-underline"
+                    to="#"
+                  >
+                    Bland Selv Slik
+                  </NavLink>
+                </li>
+                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm p-3.5 mt-5">
+                  <NavLink
+                    className="flex items-center pr-6 hover:no-underline"
+                    to="#"
+                  >
+                    Slikgaver
+                  </NavLink>
+                </li>
+                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm p-3.5 mt-5">
+                  <NavLink
+                    className="flex items-center pr-6 hover:no-underline"
+                    to="#"
+                  >
+                    Gelatinefri Mix
+                  </NavLink>
+                </li>
+                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm p-3.5 mt-5">
+                  <NavLink
+                    className="flex items-center pr-6 hover:no-underline"
+                    to="#"
+                  >
+                    Kurv
+                  </NavLink>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
