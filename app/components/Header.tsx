@@ -5,9 +5,12 @@ import type {LayoutProps} from './Layout';
 import {useRootLoaderData} from '~/root';
 import page_logo from '../../public/page_logo.svg';
 import cart_black_logo from '../../public/cart_black_logo.svg';
+import cartWhite from '../../public/cart_white_logo.svg';
 import hamburger_icon from '../../public/hamburger_icon.svg';
 import searchIcon from '../../public/search_black_icon.svg';
 import downArrow from '../../public/down_arrow.svg';
+import downArrowWhite from '../../public/down_arrow_white.svg';
+import upArrowWhite from '../../public/up_arrow_white.svg';
 import closeIcon from '../../public/close_white_icon.svg';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
@@ -32,7 +35,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
         viewport="desktop"
         primaryDomainUrl={header.shop.primaryDomain.url}
       />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} header={header} />
     </header>
   );
 }
@@ -142,15 +145,17 @@ export function HeaderMenu({
 }
 
 function HeaderCtas({
+  header,
   isLoggedIn,
   cart,
-}: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
+}: Pick<HeaderProps, 'isLoggedIn' | 'cart' | 'header'>) {
+  const {shop, menu} = header;
   return (
     <nav
       className="flex lg:hidden items-center justify-between w-full h-full ml-4 mr-4 mt-5"
       role="navigation"
     >
-      <HeaderMenuMobileToggle />
+      <HeaderMenuMobileToggle menu={menu} cart={cart} />
       {/* <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
@@ -166,8 +171,16 @@ function HeaderCtas({
   );
 }
 
-function HeaderMenuMobileToggle() {
+function HeaderMenuMobileToggle({
+  menu,
+  cart,
+}: {
+  menu: HeaderProps['header']['menu'];
+  cart: HeaderProps['cart'];
+}) {
   const [showMobileNavigation, setShowMobileNavigation] = useState(false);
+  const [submenu, setSubmenu] = useState(false);
+  const [upArrow, setUpArrow] = useState(false);
   return (
     <>
       <button
@@ -185,12 +198,11 @@ function HeaderMenuMobileToggle() {
       </button>
       {showMobileNavigation && (
         <div className="mobile-navigation fixed top-0 left-0 w-full h-screen bg-none z-[999]">
-          <div className="mobile_navigation_wrapper relative w-full h-screen pr-0 pl-0 pt-6 pb-12 bg-[url('../../public/mobile_navigation_bg.svg')] bg-[#6E4695] bg-cover overflow-auto translate-x-0 group-hover:translate-x-full transition-[transform] ease-in-out duration-300">
+          <div className="mobile_navigation_wrapper relative w-full h-screen pr-0 pl-0 pt-6 pb-12 bg-[url('../../public/mobile_navigation_bg.svg')] bg-[#6E4695] bg-cover overflow-auto translate-x-0 group-active:translate-x-full transition-[transform] ease-in-out duration-500">
             <button
               className="flex items-center justify-center w-[50px] h-[50px] absolute top-0 right-0 bg-[#6E4695]"
               onClick={() => {
                 setShowMobileNavigation(false);
-                console.log('close');
               }}
             >
               <img src={closeIcon} alt="" width={16} height={16} />
@@ -199,6 +211,100 @@ function HeaderMenuMobileToggle() {
               <img src={page_logo} alt="" width={86} height={46} />
             </div>
             <nav className="mt-40 flex justify-center">
+              <ul className="w-[78%]">
+                {menu?.items.map((item) => {
+                  return (
+                    <li
+                      className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] p-3.5 [&:not(:first-child)]:mt-5"
+                      key={item.id}
+                    >
+                      <div className="flex-col">
+                        <div className="flex justify-end items-center pr-6">
+                          {item.title == 'Kurv' && (
+                            <a className="mr-2" href="/cart">
+                              <img
+                                className="rounded-none"
+                                src={cartWhite}
+                                alt="Cart"
+                                width={17}
+                                height={17}
+                              />
+                            </a>
+                          )}
+                          <NavLink
+                            className="flex items-center uppercase text-white font-bold text-sm hover:no-underline"
+                            key={item.id}
+                            /* onClick={closeAside} */
+                            prefetch="intent"
+                            /* style={activeLinkStyle} */
+                            to="#"
+                          >
+                            {item.title}
+                          </NavLink>
+                          {item.items.length > 0 && (
+                            <>
+                              <button
+                                className="flex items-center w-3 h-3 ml-2"
+                                onClick={() => {
+                                  setSubmenu(true);
+                                  setUpArrow(true);
+                                  if (submenu || upArrow) {
+                                    setSubmenu(false);
+                                    setUpArrow(false);
+                                  }
+                                }}
+                              >
+                                {!upArrow && (
+                                  <img
+                                    className="rounded-none"
+                                    src={downArrowWhite}
+                                    alt="Show submenu"
+                                    width={10}
+                                    height={8}
+                                  />
+                                )}
+                                {upArrow && (
+                                  <img
+                                    className="rounded-none"
+                                    src={upArrowWhite}
+                                    alt="Show submenu"
+                                    width={10}
+                                    height={8}
+                                  />
+                                )}
+                              </button>
+                            </>
+                          )}
+                          {item.title == 'Kurv' && (
+                            <div className="ml-1.5 w-6 h-6 bg-white rounded-full text-[#FFAD05] font-bold text-lg flex justify-center items-center">
+                              {cart.totalQuantity || 0}
+                            </div>
+                          )}
+                        </div>
+                        {submenu && (
+                          <ul className="menu-list overflow-hidden h-auto transition-[height] ease-in-out duration-200">
+                            {item.items.map((sub) => (
+                              <li
+                                key={sub.id}
+                                className="pt-4 pr-11 mb-0 flex justify-end text-white opacity-70"
+                              >
+                                <NavLink
+                                  className="font-bold text-sm hover:block hover:no-underline cursor-pointer"
+                                  to="#"
+                                >
+                                  {sub.title}
+                                </NavLink>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+            {/* <nav className="mt-40 flex justify-center">
               <ul className="w-[78%]">
                 <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm no-underline p-3.5 [&:not(:first-child)]:mt-5">
                   <NavLink
@@ -233,7 +339,7 @@ function HeaderMenuMobileToggle() {
                   </NavLink>
                 </li>
               </ul>
-            </nav>
+            </nav> */}
           </div>
         </div>
       )}
