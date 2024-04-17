@@ -32,7 +32,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
         viewport="desktop"
         primaryDomainUrl={header.shop.primaryDomain.url}
       />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} header={header} />
     </header>
   );
 }
@@ -144,13 +144,16 @@ export function HeaderMenu({
 function HeaderCtas({
   isLoggedIn,
   cart,
-}: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
+  header,
+}: Pick<HeaderProps, 'isLoggedIn' | 'cart' | 'header'>) {
+  const menu = header.menu;
+  const primaryDomainUrl = header.shop.primaryDomain.url;
   return (
     <nav
       className="flex lg:hidden items-center justify-between w-full h-full ml-4 mr-4 mt-5"
       role="navigation"
     >
-      <HeaderMenuMobileToggle />
+      <HeaderMenuMobileToggle menu={menu} primaryDomainUrl={primaryDomainUrl} />
       {/* <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
@@ -166,8 +169,15 @@ function HeaderCtas({
   );
 }
 
-function HeaderMenuMobileToggle() {
+function HeaderMenuMobileToggle({
+  menu,
+  primaryDomainUrl,
+}: {
+  menu: HeaderProps['header']['menu'];
+  primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
+}) {
   const [showMobileNavigation, setShowMobileNavigation] = useState(false);
+  const {publicStoreDomain} = useRootLoaderData();
   return (
     <>
       <button
@@ -190,7 +200,6 @@ function HeaderMenuMobileToggle() {
               className="flex items-center justify-center w-[50px] h-[50px] absolute top-0 right-0 bg-[#6E4695]"
               onClick={() => {
                 setShowMobileNavigation(false);
-                console.log('close');
               }}
             >
               <img src={closeIcon} alt="" width={16} height={16} />
@@ -200,7 +209,33 @@ function HeaderMenuMobileToggle() {
             </div>
             <nav className="mt-40 flex justify-center">
               <ul className="w-[78%]">
-                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm no-underline p-3.5 [&:not(:first-child)]:mt-5">
+                {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+                  const url =
+                    item.url!.includes('myshopify.com') ||
+                    item.url!.includes(publicStoreDomain) ||
+                    item.url!.includes(primaryDomainUrl)
+                      ? new URL(item.url!).pathname
+                      : item.url!;
+                  return (
+                    <li
+                      key={item.id}
+                      className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm no-underline p-3.5 [&:not(:first-child)]:mt-5"
+                    >
+                      <NavLink
+                        className="flex items-center pr-6 hover:no-underline"
+                        end
+                        prefetch="intent"
+                        to={url}
+                        onClick={() => {
+                          setShowMobileNavigation(false);
+                        }}
+                      >
+                        {item.title}
+                      </NavLink>
+                    </li>
+                  );
+                })}
+                {/* <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm no-underline p-3.5 [&:not(:first-child)]:mt-5">
                   <NavLink
                     className="flex items-center pr-6 hover:no-underline"
                     to="#"
@@ -231,7 +266,7 @@ function HeaderMenuMobileToggle() {
                   >
                     Kurv
                   </NavLink>
-                </li>
+                </li> */}
               </ul>
             </nav>
           </div>
