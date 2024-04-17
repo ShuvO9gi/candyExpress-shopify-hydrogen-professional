@@ -97,9 +97,11 @@ function SearchAside() {
 function MobileMenuAside({
   menu,
   shop,
+  cart,
 }: {
   menu: HeaderQuery['menu'];
   shop: HeaderQuery['shop'];
+  cart: LayoutProps['cart'];
 }) {
   return (
     menu &&
@@ -109,6 +111,7 @@ function MobileMenuAside({
           menu={menu}
           viewport="mobile"
           primaryDomainUrl={shop.primaryDomain.url}
+          cart={cart}
         />
       </Aside>
     )
