@@ -235,38 +235,6 @@ function HeaderMenuMobileToggle({
                     </li>
                   );
                 })}
-                {/* <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm no-underline p-3.5 [&:not(:first-child)]:mt-5">
-                  <NavLink
-                    className="flex items-center pr-6 hover:no-underline"
-                    to="#"
-                  >
-                    Bland Selv Slik
-                  </NavLink>
-                </li>
-                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm p-3.5 mt-5">
-                  <NavLink
-                    className="flex items-center pr-6 hover:no-underline"
-                    to="#"
-                  >
-                    Slikgaver
-                  </NavLink>
-                </li>
-                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm p-3.5 mt-5">
-                  <NavLink
-                    className="flex items-center pr-6 hover:no-underline"
-                    to="#"
-                  >
-                    Gelatinefri Mix
-                  </NavLink>
-                </li>
-                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm p-3.5 mt-5">
-                  <NavLink
-                    className="flex items-center pr-6 hover:no-underline"
-                    to="#"
-                  >
-                    Kurv
-                  </NavLink>
-                </li> */}
               </ul>
             </nav>
           </div>
