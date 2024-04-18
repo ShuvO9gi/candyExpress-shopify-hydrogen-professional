@@ -114,36 +114,35 @@ function ProductsGrid({
   const containerRefs = useRef<Array<HTMLDivElement | null>>(
     Array(categories.length).fill(null),
   );
-
   const touchStartX = useRef<number>(0);
-
-  const handleSwipe = (direction: 'left' | 'right', index: number) => {
-    if (!containerRefs.current[index]) return;
-
-    const container = containerRefs.current[index];
-    const scrollAmount = direction === 'left' ? -300 : 300;
-    container!.scrollLeft += scrollAmount;
-  };
+  const touchStartTime = useRef<number>(0);
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     touchStartX.current = e.touches[0].clientX;
+    touchStartTime.current = Date.now(); // Record the start time
+
+    console.log('touchStartX:', touchStartX.current);
+    console.log('touchStartTime:', touchStartTime.current);
   };
 
-  const handleTouchMove = (
+  const handleTouchEnd = (
     index: number,
     e: React.TouchEvent<HTMLDivElement>,
   ) => {
     if (!containerRefs.current[index]) return;
 
-    const touchEndX = e.touches[0].clientX;
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndTime = Date.now();
 
-    if (touchStartX.current - touchEndX > 50) {
-      handleSwipe('right', index);
-    }
+    console.log('touchEndX:', touchEndX);
+    console.log('touchEndTime:', touchEndTime);
+    const movedX = touchEndX - touchStartX.current;
+    const elapsed = touchEndTime - touchStartTime.current;
+    const velocity = movedX / elapsed; // pixels per millisecond
 
-    if (touchStartX.current - touchEndX < -50) {
-      handleSwipe('left', index);
-    }
+    const scrollAmount = velocity * 500; // Adjust multiplier to tune sensitivity
+    const container = containerRefs.current[index];
+    container!.scrollLeft -= scrollAmount;
   };
 
   return (
@@ -161,21 +160,13 @@ function ProductsGrid({
               <h1 className="md:text-4xl text-2xl font-bold">
                 {category.display_name}
               </h1>
-              <div className="hidden md:flex">
-                <button onClick={() => handleSwipe('left', index)}>
-                  <img src={leftArrow} alt="Left" className="mr-2 w-8 h-8" />
-                </button>
-                <button onClick={() => handleSwipe('right', index)}>
-                  <img src={rightArrow} alt="Right" className="w-8 h-8" />
-                </button>
-              </div>
             </div>
 
             <div
               ref={(ref) => (containerRefs.current[index] = ref)}
               className="slider-container"
               onTouchStart={handleTouchStart}
-              onTouchMove={(e) => handleTouchMove(index, e)}
+              onTouchEnd={(e) => handleTouchEnd(index, e)}
               style={{
                 display: 'flex',
                 overflowX: 'hidden',
@@ -184,7 +175,7 @@ function ProductsGrid({
               }}
             >
               {filteredProducts.map((product, idx) => (
-                <div key={`${product.id}-${idx}`} className=" md:mr-5">
+                <div key={`${product.id}-${idx}`} className="md:mr-5">
                   <ProductItem product={product} />
                 </div>
               ))}

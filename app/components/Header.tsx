@@ -148,14 +148,16 @@ function HeaderCtas({
   header,
   isLoggedIn,
   cart,
+  header,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart' | 'header'>) {
-  const {shop, menu} = header;
+  const menu = header.menu;
+  const primaryDomainUrl = header.shop.primaryDomain.url;
   return (
     <nav
       className="flex lg:hidden items-center justify-between w-full h-full ml-4 mr-4 mt-5"
       role="navigation"
     >
-      <HeaderMenuMobileToggle menu={menu} cart={cart} />
+      <HeaderMenuMobileToggle menu={menu} primaryDomainUrl={primaryDomainUrl} />
       {/* <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
@@ -173,14 +175,13 @@ function HeaderCtas({
 
 function HeaderMenuMobileToggle({
   menu,
-  cart,
+  primaryDomainUrl,
 }: {
   menu: HeaderProps['header']['menu'];
-  cart: HeaderProps['cart'];
+  primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
 }) {
   const [showMobileNavigation, setShowMobileNavigation] = useState(false);
-  const [submenu, setSubmenu] = useState(false);
-  const [upArrow, setUpArrow] = useState(false);
+  const {publicStoreDomain} = useRootLoaderData();
   return (
     <>
       <button
@@ -212,106 +213,29 @@ function HeaderMenuMobileToggle({
             </div>
             <nav className="mt-40 flex justify-center">
               <ul className="w-[78%]">
-                {menu?.items.map((item) => {
+                {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+                  const url =
+                    item.url!.includes('myshopify.com') ||
+                    item.url!.includes(publicStoreDomain) ||
+                    item.url!.includes(primaryDomainUrl)
+                      ? new URL(item.url!).pathname
+                      : item.url!;
                   return (
                     <li
-                      className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] p-3.5 [&:not(:first-child)]:mt-5"
                       key={item.id}
+                      className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm no-underline p-3.5 [&:not(:first-child)]:mt-5"
                     >
-                      <div className="flex-col">
-                        <div className="flex justify-end items-center pr-6">
-                          {item.title == 'Kurv' && (
-                            <a className="mr-2" href="/cart">
-                              <img
-                                className="rounded-none"
-                                src={cartWhite}
-                                alt="Cart"
-                                width={17}
-                                height={17}
-                              />
-                            </a>
-                          )}
-                          <NavLink
-                            className="flex items-center uppercase text-white font-bold text-sm hover:no-underline"
-                            key={item.id}
-                            /* onClick={closeAside} */
-                            prefetch="intent"
-                            /* style={activeLinkStyle} */
-                            to="#"
-                          >
-                            {item.title}
-                          </NavLink>
-                          {item.items.length > 0 && (
-                            <>
-                              <button
-                                className="flex items-center w-3 h-3 ml-2"
-                                onClick={() => {
-                                  setSubmenu(true);
-                                  setUpArrow(true);
-                                  if (submenu || upArrow) {
-                                    setSubmenu(false);
-                                    setUpArrow(false);
-                                  }
-                                }}
-                              >
-                                {!upArrow && (
-                                  <img
-                                    className="rounded-none"
-                                    src={downArrowWhite}
-                                    alt="Show submenu"
-                                    width={10}
-                                    height={8}
-                                  />
-                                )}
-                                {upArrow && (
-                                  <img
-                                    className="rounded-none"
-                                    src={upArrowWhite}
-                                    alt="Show submenu"
-                                    width={10}
-                                    height={8}
-                                  />
-                                )}
-                              </button>
-                            </>
-                          )}
-                          {item.title == 'Kurv' && (
-                            <>
-                              <div className="ml-1.5 w-6 h-6 bg-white rounded-full text-[#FFAD05] font-bold text-lg flex justify-center items-center">
-                                <Suspense fallback={0}>
-                                  <Await resolve={cart}>
-                                    {(cart) => {
-                                      if (!cart) return 0;
-                                      {
-                                        console.log(cart);
-                                      }
-                                      return cart.totalQuantity || 0;
-                                    }}
-                                  </Await>
-                                </Suspense>
-                              </div>
-                              {/* <MobileCart cart={cart} /> */}
-                            </>
-                          )}
-                        </div>
-                        {submenu && (
-                          <ul className="menu-list overflow-hidden h-auto transition-[height] ease-in-out duration-200">
-                            {item.items.map((sub) => (
-                              <li
-                                key={sub.id}
-                                className="pt-4 pr-11 mb-0 flex justify-end text-white opacity-70"
-                              >
-                                <NavLink
-                                  className="font-bold text-sm hover:block hover:no-underline cursor-pointer"
-                                  to="#"
-                                >
-                                  {sub.title}
-                                </NavLink>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
+                      <NavLink
+                        className="flex items-center pr-6 hover:no-underline"
+                        end
+                        prefetch="intent"
+                        to={url}
+                        onClick={() => {
+                          setShowMobileNavigation(false);
+                        }}
+                      >
+                        {item.title}
+                      </NavLink>
                     </li>
                   );
                 })}
