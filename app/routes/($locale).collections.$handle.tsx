@@ -175,7 +175,7 @@ function ProductsGrid({
               onTouchEnd={() => handleTouchEnd(index)}
               style={{
                 display: 'flex',
-                overflowX: 'scroll',
+                overflowX: 'hidden',
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
                 transition: 'scroll-left 0.3s ease-out',
