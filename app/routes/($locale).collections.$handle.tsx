@@ -116,25 +116,38 @@ function ProductsGrid({
   );
   const touchStartX = useRef<number>(0);
   const lastTouchX = useRef<number>(0);
+  const isDragging = useRef<boolean>(false);
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     const x = e.touches[0].clientX;
     touchStartX.current = x;
-    lastTouchX.current = x; // Set lastTouchX at the start of the touch
+    lastTouchX.current = x;
+    isDragging.current = true;
   };
 
   const handleTouchMove = (
     index: number,
     e: React.TouchEvent<HTMLDivElement>,
   ) => {
-    if (!containerRefs.current[index]) return;
+    if (!containerRefs.current[index] || !isDragging.current) return;
 
     const touchX = e.touches[0].clientX;
-    const deltaX = touchX - lastTouchX.current; // Calculate the difference from the last touch position
-    lastTouchX.current = touchX; // Update lastTouchX to the current position
+    const deltaX = touchX - lastTouchX.current;
+    lastTouchX.current = touchX;
 
     const container = containerRefs.current[index];
-    container!.scrollLeft -= deltaX; // Update the scroll position by the delta
+    // Temporarily disable the transition to track touch movement
+    container.style.transition = 'none';
+    container.scrollLeft -= deltaX;
+  };
+
+  const handleTouchEnd = (index: number) => {
+    if (!containerRefs.current[index]) return;
+
+    const container = containerRefs.current[index];
+    // Re-enable the transition for smooth scrolling effect post-drag
+    container.style.transition = 'scroll-left 0.3s ease-out';
+    isDragging.current = false;
   };
 
   return (
@@ -159,9 +172,10 @@ function ProductsGrid({
               className="slider-container"
               onTouchStart={handleTouchStart}
               onTouchMove={(e) => handleTouchMove(index, e)}
+              onTouchEnd={() => handleTouchEnd(index)}
               style={{
                 display: 'flex',
-                overflowX: 'scroll', // Changed to 'scroll' to allow manual control
+                overflowX: 'scroll',
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
               }}
