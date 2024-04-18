@@ -178,6 +178,7 @@ function ProductsGrid({
                 overflowX: 'scroll',
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
+                transition: 'scroll-left 0.3s ease-out',
               }}
             >
               {filteredProducts.map((product, idx) => (
