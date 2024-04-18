@@ -276,9 +276,22 @@ function HeaderMenuMobileToggle({
                             </>
                           )}
                           {item.title == 'Kurv' && (
-                            <div className="ml-1.5 w-6 h-6 bg-white rounded-full text-[#FFAD05] font-bold text-lg flex justify-center items-center">
-                              {cart.totalQuantity || 0}
-                            </div>
+                            <>
+                              <div className="ml-1.5 w-6 h-6 bg-white rounded-full text-[#FFAD05] font-bold text-lg flex justify-center items-center">
+                                <Suspense fallback={0}>
+                                  <Await resolve={cart}>
+                                    {(cart) => {
+                                      if (!cart) return 0;
+                                      {
+                                        console.log(cart);
+                                      }
+                                      return cart.totalQuantity || 0;
+                                    }}
+                                  </Await>
+                                </Suspense>
+                              </div>
+                              {/* <MobileCart cart={cart} /> */}
+                            </>
                           )}
                         </div>
                         {submenu && (
@@ -304,42 +317,6 @@ function HeaderMenuMobileToggle({
                 })}
               </ul>
             </nav>
-            {/* <nav className="mt-40 flex justify-center">
-              <ul className="w-[78%]">
-                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm no-underline p-3.5 [&:not(:first-child)]:mt-5">
-                  <NavLink
-                    className="flex items-center pr-6 hover:no-underline"
-                    to="#"
-                  >
-                    Bland Selv Slik
-                  </NavLink>
-                </li>
-                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm p-3.5 mt-5">
-                  <NavLink
-                    className="flex items-center pr-6 hover:no-underline"
-                    to="#"
-                  >
-                    Slikgaver
-                  </NavLink>
-                </li>
-                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm p-3.5 mt-5">
-                  <NavLink
-                    className="flex items-center pr-6 hover:no-underline"
-                    to="#"
-                  >
-                    Gelatinefri Mix
-                  </NavLink>
-                </li>
-                <li className="flex justify-end items-center w-auto rounded-3xl bg-[#9C6EAA] uppercase text-white font-bold text-sm p-3.5 mt-5">
-                  <NavLink
-                    className="flex items-center pr-6 hover:no-underline"
-                    to="#"
-                  >
-                    Kurv
-                  </NavLink>
-                </li>
-              </ul>
-            </nav> */}
           </div>
         </div>
       )}
@@ -387,6 +364,27 @@ function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
         {(cart) => {
           if (!cart) return <CartBadge count={0} />;
           return <CartBadge count={cart.totalQuantity || 0} />;
+        }}
+      </Await>
+    </Suspense>
+  );
+}
+
+function CartCount({count}: {count: number}) {
+  return (
+    <div className="ml-1.5 w-6 h-6 bg-white rounded-full text-[#FFAD05] font-bold text-lg flex justify-center items-center">
+      {count}
+    </div>
+  );
+}
+
+function MobileCart({cart}: Pick<HeaderProps, 'cart'>) {
+  return (
+    <Suspense fallback={<CartCount count={0} />}>
+      <Await resolve={cart}>
+        {(cart) => {
+          if (!cart) return <CartCount count={0} />;
+          return <CartCount count={cart.totalQuantity || 0} />;
         }}
       </Await>
     </Suspense>
