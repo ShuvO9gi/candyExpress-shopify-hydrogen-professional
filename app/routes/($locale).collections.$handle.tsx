@@ -11,7 +11,7 @@ import {useVariantUrl} from '~/lib/variants';
 import infoIcon from '../../public/icon_info.svg';
 import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
-import {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import type {
   Category,
@@ -115,37 +115,26 @@ function ProductsGrid({
     Array(categories.length).fill(null),
   );
   const touchStartX = useRef<number>(0);
-  const touchStartTime = useRef<number>(0);
+  const lastTouchX = useRef<number>(0);
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartTime.current = Date.now(); // Record the start time
+    const x = e.touches[0].clientX;
+    touchStartX.current = x;
+    lastTouchX.current = x; // Set lastTouchX at the start of the touch
   };
 
-  const handleTouchEnd = (
+  const handleTouchMove = (
     index: number,
     e: React.TouchEvent<HTMLDivElement>,
   ) => {
     if (!containerRefs.current[index]) return;
 
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndTime = Date.now();
-    const movedX = touchEndX - touchStartX.current;
-    const elapsed = touchEndTime - touchStartTime.current;
-    const velocity = movedX / elapsed; // pixels per millisecond
-    const velocityThreshold = 0.5; // Adjust this value based on testing what feels right
-    let scrollAmount;
-
-    if (Math.abs(velocity) > velocityThreshold) {
-      // High velocity, use a factor of the velocity to calculate scroll amount
-      scrollAmount = velocity * 500; // This factor (500) can be adjusted for more or less sensitivity
-    } else {
-      // Low velocity, move by the exact distance swiped
-      scrollAmount = movedX;
-    }
+    const touchX = e.touches[0].clientX;
+    const deltaX = touchX - lastTouchX.current; // Calculate the difference from the last touch position
+    lastTouchX.current = touchX; // Update lastTouchX to the current position
 
     const container = containerRefs.current[index];
-    container!.scrollLeft -= scrollAmount;
+    container!.scrollLeft -= deltaX; // Update the scroll position by the delta
   };
 
   return (
@@ -166,13 +155,13 @@ function ProductsGrid({
             </div>
 
             <div
-              ref={(ref) => (containerRefs.current[index] = ref)}
+              ref={(el) => (containerRefs.current[index] = el)}
               className="slider-container"
               onTouchStart={handleTouchStart}
-              onTouchEnd={(e) => handleTouchEnd(index, e)}
+              onTouchMove={(e) => handleTouchMove(index, e)}
               style={{
                 display: 'flex',
-                overflowX: 'hidden',
+                overflowX: 'scroll', // Changed to 'scroll' to allow manual control
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
               }}
