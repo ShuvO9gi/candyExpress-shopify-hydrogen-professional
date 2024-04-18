@@ -120,9 +120,6 @@ function ProductsGrid({
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartTime.current = Date.now(); // Record the start time
-
-    console.log('touchStartX:', touchStartX.current);
-    console.log('touchStartTime:', touchStartTime.current);
   };
 
   const handleTouchEnd = (
@@ -133,14 +130,20 @@ function ProductsGrid({
 
     const touchEndX = e.changedTouches[0].clientX;
     const touchEndTime = Date.now();
-
-    console.log('touchEndX:', touchEndX);
-    console.log('touchEndTime:', touchEndTime);
     const movedX = touchEndX - touchStartX.current;
     const elapsed = touchEndTime - touchStartTime.current;
     const velocity = movedX / elapsed; // pixels per millisecond
+    const velocityThreshold = 0.5; // Adjust this value based on testing what feels right
+    let scrollAmount;
 
-    const scrollAmount = velocity * 500; // Adjust multiplier to tune sensitivity
+    if (Math.abs(velocity) > velocityThreshold) {
+      // High velocity, use a factor of the velocity to calculate scroll amount
+      scrollAmount = velocity * 500; // This factor (500) can be adjusted for more or less sensitivity
+    } else {
+      // Low velocity, move by the exact distance swiped
+      scrollAmount = movedX;
+    }
+
     const container = containerRefs.current[index];
     container!.scrollLeft -= scrollAmount;
   };
