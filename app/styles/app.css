@@ -475,3 +475,13 @@ aside li {
 .account-logout {
   display: inline-block;
 }
+
+.slider-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.slider-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

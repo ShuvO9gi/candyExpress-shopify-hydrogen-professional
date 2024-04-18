@@ -175,10 +175,10 @@ function ProductsGrid({
               onTouchEnd={() => handleTouchEnd(index)}
               style={{
                 display: 'flex',
-                overflowX: 'hidden',
+                overflowX: 'scroll',
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
-                transition: 'scroll-left 0.3s ease-out',
+                // transition: 'scroll-left 0.3s ease-out',
               }}
             >
               {filteredProducts.map((product, idx) => (
