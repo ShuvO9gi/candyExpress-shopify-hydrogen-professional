@@ -151,8 +151,6 @@ function ProductsGrid({
     isDragging.current = false;
   };
 
-  console.log(moment.utc().format());
-
   return (
     <div>
       {categories.map((category, index) => {
