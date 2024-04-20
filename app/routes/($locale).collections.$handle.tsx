@@ -19,7 +19,6 @@ import type {
   TopMenu,
   VerticalMenu,
 } from '~/dtos/collections.dto';
-import moment from 'moment';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
