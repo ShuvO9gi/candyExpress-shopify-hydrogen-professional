@@ -11,7 +11,8 @@ import {useVariantUrl} from '~/lib/variants';
 import infoIcon from '../../public/icon_info.svg';
 import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
-import {useEffect, useRef, useState} from 'react';
+import closeBlackIcon from '../../public/action/close_icon.svg';
+import {useEffect, useMemo, useRef, useState} from 'react';
 
 import type {
   Category,
@@ -145,23 +146,106 @@ function ProductsGrid({
     container!.scrollLeft -= scrollAmount;
   };
 
+  /*  */
+
+  /*  */
+  const [searchCandy, setSearchCandy] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredItems, setFilteredItems] = useState<ProductItemFragment[]>([]);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    const filtered = products.filter((item: ProductItemFragment) =>
+      item.title.toLowerCase().includes(query.toLowerCase()),
+    );
+    console.log('re-rener');
+
+    setFilteredItems(filtered);
+  };
+
+  /* const filteredItems = useMemo(() => {
+    return products.filter((item: ProductItemFragment) =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [products, searchQuery]); */
+
   return (
     <div>
-      {categories.map((category, index) => {
-        const filteredProducts = products.filter((product) =>
-          product.tags.includes(category.tag_name),
-        );
+      <button onClick={() => setSearchCandy(true)}>Search Products</button>
+      {searchCandy && (
+        <div className="w-full h-[80px] bg-[#333333]/50 sticky top-[88px] z-[1] flex justify-center items-center">
+          <input
+            type="search"
+            className="w-[50%] h-[50%] rounded text-sm font-normal text-black/50"
+            placeholder="Search your candy"
+            onChange={(e) => handleInputChange(e)}
+          />
+          <button
+            className="w-6 h-6 bg-[#FFAD05] flex justify-center items-center absolute right-0 top-0"
+            onClick={() => {
+              setSearchCandy(false);
+              setFilteredItems([]);
+            }}
+          >
+            <img
+              className=""
+              src={closeBlackIcon}
+              alt="close"
+              width={10}
+              height={10}
+            />
+          </button>
+        </div>
+      )}
+      {searchQuery === '' ? (
+        <div>
+          {categories.map((category, index) => {
+            const filteredProducts = products.filter((product) =>
+              product.tags.includes(category.tag_name),
+            );
 
-        if (!filteredProducts.length) return null;
+            if (!filteredProducts.length) return null;
 
-        return (
-          <div key={category.tag_name}>
-            <div className="flex justify-between items-center md:mb-8 mb-4">
+            return (
+              <div key={category.tag_name}>
+                <div className="flex justify-between items-center md:mb-8 mb-4">
+                  <h1 className="md:text-4xl text-2xl font-bold">
+                    {category.display_name}
+                  </h1>
+                </div>
+
+                <div
+                  ref={(ref) => (containerRefs.current[index] = ref)}
+                  className="slider-container"
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={(e) => handleTouchEnd(index, e)}
+                  style={{
+                    display: 'flex',
+                    overflowX: 'hidden',
+                    whiteSpace: 'nowrap',
+                    scrollBehavior: 'smooth',
+                  }}
+                >
+                  {filteredProducts.map((product, idx) => (
+                    <div key={`${product.id}-${idx}`} className="md:mr-5">
+                      <ProductItem product={product} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : filteredItems.length > 0 ? (
+        filteredItems.map((item, index) => (
+          <div key={item.id}>
+            {/* <div className="flex justify-between items-center md:mb-8 mb-4">
               <h1 className="md:text-4xl text-2xl font-bold">
                 {category.display_name}
               </h1>
-            </div>
-
+            </div> */}
             <div
               ref={(ref) => (containerRefs.current[index] = ref)}
               className="slider-container"
@@ -174,15 +258,17 @@ function ProductsGrid({
                 scrollBehavior: 'smooth',
               }}
             >
-              {filteredProducts.map((product, idx) => (
-                <div key={`${product.id}-${idx}`} className="md:mr-5">
-                  <ProductItem product={product} />
-                </div>
-              ))}
+              <div key={`${item.id}-${index}`} className="md:mr-5">
+                {console.log('filtered value')}
+                {console.log(item)}
+                <ProductItem product={item} />
+              </div>
             </div>
           </div>
-        );
-      })}
+        ))
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 }
