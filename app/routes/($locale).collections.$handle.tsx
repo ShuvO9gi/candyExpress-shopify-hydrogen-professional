@@ -137,8 +137,8 @@ function ProductsGrid({
 
     const container = containerRefs.current[index];
     // Temporarily disable the transition to track touch movement
-    container.style.transition = 'none';
-    container.scrollLeft -= deltaX;
+    container!.style.transition = 'none';
+    container!.scrollLeft -= deltaX;
   };
 
   const handleTouchEnd = (index: number) => {
@@ -146,7 +146,7 @@ function ProductsGrid({
 
     const container = containerRefs.current[index];
     // Re-enable the transition for smooth scrolling effect post-drag
-    container.style.transition = 'scroll-left 0.3s ease-out';
+    container!.style.transition = 'scroll-left 0.3s ease-out';
     isDragging.current = false;
   };
 
@@ -175,7 +175,7 @@ function ProductsGrid({
               onTouchEnd={() => handleTouchEnd(index)}
               style={{
                 display: 'flex',
-                overflowX: 'scroll',
+                overflowX: 'auto',
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
                 // transition: 'scroll-left 0.3s ease-out',

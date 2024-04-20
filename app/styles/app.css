@@ -476,7 +476,7 @@ aside li {
   display: inline-block;
 }
 
-.slider-container::-webkit-scrollbar {
+/* .slider-container::-webkit-scrollbar {
   display: none;
   -webkit-appearance: none;
   width: 0;
@@ -484,7 +484,19 @@ aside li {
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.slider-container {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+/* .slider-container {
+  scrollbar-width: none; 
+}
+ */
+
+.slider-container::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.slider-container::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+.slider-container::-webkit-scrollbar-thumb {
+  background-color: transparent;
 }
