@@ -31,6 +31,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     pageBy: 200,
   });
 
+  console.log('first');
   if (!handle) {
     return redirect('/collections');
   }
