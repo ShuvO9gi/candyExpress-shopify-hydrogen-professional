@@ -19,6 +19,7 @@ import type {
   TopMenu,
   VerticalMenu,
 } from '~/dtos/collections.dto';
+import moment from 'moment';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -149,6 +150,8 @@ function ProductsGrid({
     container!.style.transition = 'scroll-left 0.3s ease-out';
     isDragging.current = false;
   };
+
+  console.log(moment.utc().format());
 
   return (
     <div>
