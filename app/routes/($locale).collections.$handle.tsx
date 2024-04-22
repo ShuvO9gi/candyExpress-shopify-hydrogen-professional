@@ -122,6 +122,28 @@ function ProductsGrid({
           product.tags.includes(category.tag_name),
         );
 
+        const handleReachEnd = () => {
+          // Add animation effect when reaching the end
+          const slider = document.querySelector('.swiper-wrapper');
+          if (slider) {
+            slider.classList.add('bounce-end');
+            setTimeout(() => {
+              slider.classList.remove('bounce-end');
+            }, 500); // Duration of the animation
+          }
+        };
+
+        const handleReachBeginning = () => {
+          // Add animation effect when reaching the beginning
+          const slider = document.querySelector('.swiper-wrapper');
+          if (slider) {
+            slider.classList.add('bounce-start');
+            setTimeout(() => {
+              slider.classList.remove('bounce-start');
+            }, 500); // Duration of the animation
+          }
+        };
+
         if (!filteredProducts.length) return null;
 
         return (
@@ -137,8 +159,12 @@ function ProductsGrid({
               spaceBetween={10}
               navigation
               scrollbar={{hide: true}}
-              speed={500}
-              threshold={10}
+              onReachEnd={handleReachEnd}
+              onReachBeginning={handleReachBeginning}
+              longSwipes={true} // Allow long swipes
+              longSwipesRatio={0.5}
+              touchRatio={1}
+              effect={'slide'}
               style={{
                 display: 'flex',
                 overflowX: 'hidden',
