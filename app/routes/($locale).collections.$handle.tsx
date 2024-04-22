@@ -150,10 +150,9 @@ function ProductsGrid({
     container!.style.transition = 'scroll-left 0.3s ease-out';
     isDragging.current = false;
   };
-  console.log('test');
 
   return (
-    <div>
+    <div style={{overflowX: 'hidden'}}>
       {categories.map((category, index) => {
         const filteredProducts = products.filter((product) =>
           product.tags.includes(category.tag_name),
