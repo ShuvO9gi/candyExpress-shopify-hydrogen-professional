@@ -142,7 +142,7 @@ function ProductsGrid({
     const container = containerRefs.current[index];
     // Temporarily disable the transition to track touch movement
     container!.style.transition = 'none';
-    container!.scrollLeft -= deltaX * 20;
+    container!.scrollLeft -= deltaX * 10;
   };
 
   const handleTouchEnd = (index: number) => {
