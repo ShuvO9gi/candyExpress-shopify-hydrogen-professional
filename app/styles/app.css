@@ -475,3 +475,8 @@ aside li {
 .account-logout {
   display: inline-block;
 }
+
+.swiper-wrapper {
+  display: flex;
+  flex-direction: 'row';
+}

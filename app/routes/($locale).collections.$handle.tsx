@@ -19,6 +19,9 @@ import type {
   TopMenu,
   VerticalMenu,
 } from '~/dtos/collections.dto';
+import {Swiper, SwiperSlide} from 'swiper/react';
+import 'node_modules/swiper/swiper.css';
+import SwiperCore from 'swiper/core';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -112,55 +115,8 @@ function ProductsGrid({
   products: ProductItemFragment[];
   categories: Category[];
 }) {
-  const containerRefs = useRef<Array<HTMLDivElement | null>>(
-    Array(categories.length).fill(null),
-  );
-  const touchStartX = useRef<number>(0);
-  const lastTouchX = useRef<number>(0);
-  const isDragging = useRef<boolean>(false);
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    const x = e.touches[0].clientX;
-    touchStartX.current = x;
-    lastTouchX.current = x;
-    isDragging.current = true;
-    //make overFlow scroll smooth for this div
-
-    e.currentTarget.style.overflowX = 'scroll';
-  };
-
-  const handleTouchMove = (
-    index: number,
-    e: React.TouchEvent<HTMLDivElement>,
-  ) => {
-    if (!containerRefs.current[index] || !isDragging.current) return;
-
-    const touchX = e.touches[0].clientX;
-    const deltaX = touchX - lastTouchX.current;
-    lastTouchX.current = touchX;
-
-    const container = containerRefs.current[index];
-    // Temporarily disable the transition to track touch movement
-
-    container!.style.transition = 'none';
-    if (navigator.userAgent.includes('iPhone')) {
-      container!.scrollLeft -= deltaX * 20;
-    } else {
-      container!.scrollLeft -= deltaX;
-    }
-  };
-
-  const handleTouchEnd = (index: number) => {
-    if (!containerRefs.current[index]) return;
-
-    const container = containerRefs.current[index];
-    // Re-enable the transition for smooth scrolling effect post-drag
-    container!.style.transition = 'scroll-left 0.3s ease-out';
-    isDragging.current = false;
-  };
-
   return (
-    <div style={{overflowX: 'scroll'}}>
+    <div>
       {categories.map((category, index) => {
         const filteredProducts = products.filter((product) =>
           product.tags.includes(category.tag_name),
@@ -176,26 +132,24 @@ function ProductsGrid({
               </h1>
             </div>
 
-            <div
-              ref={(el) => (containerRefs.current[index] = el)}
-              className="slider-container"
-              onTouchStart={(e) => handleTouchStart(e)}
-              onTouchMove={(e) => handleTouchMove(index, e)}
-              onTouchEnd={() => handleTouchEnd(index)}
+            <Swiper
+              slidesPerView={'auto'}
+              spaceBetween={10}
+              navigation
+              scrollbar={{hide: true}}
               style={{
                 display: 'flex',
-                overflowX: 'auto',
+                overflowX: 'hidden',
                 whiteSpace: 'nowrap',
-                scrollBehavior: 'smooth',
-                // transition: 'scroll-left 0.3s ease-out',
+                flexDirection: 'row',
               }}
             >
               {filteredProducts.map((product, idx) => (
-                <div key={`${product.id}-${idx}`} className="md:mr-5">
+                <SwiperSlide key={`${product.id}-${idx}`} className="md:mr-5">
                   <ProductItem product={product} />
-                </div>
+                </SwiperSlide>
               ))}
-            </div>
+            </Swiper>
           </div>
         );
       })}
