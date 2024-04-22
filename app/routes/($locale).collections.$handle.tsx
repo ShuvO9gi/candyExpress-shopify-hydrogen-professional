@@ -143,7 +143,11 @@ function ProductsGrid({
     // Temporarily disable the transition to track touch movement
 
     container!.style.transition = 'none';
-    container!.scrollLeft -= deltaX * 20;
+    if (navigator.userAgent.includes('iPhone')) {
+      container!.scrollLeft -= deltaX * 20;
+    } else {
+      container!.scrollLeft -= deltaX;
+    }
   };
 
   const handleTouchEnd = (index: number) => {
