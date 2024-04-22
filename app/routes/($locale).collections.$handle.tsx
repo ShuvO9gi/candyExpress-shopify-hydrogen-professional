@@ -150,6 +150,7 @@ function ProductsGrid({
     container!.style.transition = 'scroll-left 0.3s ease-out';
     isDragging.current = false;
   };
+  console.log('test');
 
   return (
     <div>
