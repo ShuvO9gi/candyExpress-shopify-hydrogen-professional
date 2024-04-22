@@ -21,7 +21,8 @@ import type {
 } from '~/dtos/collections.dto';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'node_modules/swiper/swiper.css';
-import SwiperCore from 'swiper/core';
+import {FreeMode} from 'swiper/modules';
+import 'swiper/css/free-mode';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -162,6 +163,7 @@ function ProductsGrid({
               onReachEnd={handleReachEnd}
               onReachBeginning={handleReachBeginning}
               freeMode={true}
+              modules={[FreeMode]}
               style={{
                 display: 'flex',
                 overflowX: 'hidden',
@@ -193,13 +195,8 @@ function ProductItem({
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
   return (
-    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[152px] h-[230px]">
-      <Link
-        className="flex flex-col items-center product-item"
-        key={product.id}
-        prefetch="intent"
-        to={variantUrl}
-      >
+    <div className="flex justify-center md:w-[246px] md:h-[310px] w-[152px] h-[230px] ">
+      <div className="flex flex-col items-center product-item" key={product.id}>
         <div className="mt-0.5 w-[120px] h-[120px] md:w-[186px] md:h-[186px] relative">
           <img
             className="[&&]:w-[20px] [&&]:h-[20px] mt-[-2px] ml-[116px] md:ml-[170px] absolute"
@@ -226,11 +223,12 @@ function ProductItem({
           <small className="font-semibold md:text-[14px] text-[12px] text-[#9C6EAA]">
             <Money data={product.priceRange.minVariantPrice} />
           </small>
+
           <button className="w-[124px] md:w-[206px] h-[50px] py-1 rounded-full border-0 bg-[#FFAD05] mt-[10px] mb-[20px] font-bold md:text-xl text-sm text-white tracking-wide">
             PUT I KURV
           </button>
         </div>
-      </Link>
+      </div>
     </div>
   );
 }
