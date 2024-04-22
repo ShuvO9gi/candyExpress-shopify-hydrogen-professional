@@ -12,6 +12,7 @@ import infoIcon from '../../public/icon_info.svg';
 import leftArrow from '../../public/left_arrow.svg';
 import rightArrow from '../../public/right_arrow.svg';
 import React, {useEffect, useRef, useState} from 'react';
+import {useSwiper, Swiper, SwiperSlide} from 'swiper/react';
 
 import type {
   Category,
@@ -19,10 +20,13 @@ import type {
   TopMenu,
   VerticalMenu,
 } from '~/dtos/collections.dto';
-import {Swiper, SwiperSlide} from 'swiper/react';
+
 import 'node_modules/swiper/swiper.css';
-import {FreeMode} from 'swiper/modules';
+import {FreeMode, Navigation, HashNavigation} from 'swiper/modules';
+
 import 'swiper/css/free-mode';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -35,7 +39,6 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     pageBy: 200,
   });
 
-  console.log('first');
   if (!handle) {
     return redirect('/collections');
   }
@@ -116,6 +119,7 @@ function ProductsGrid({
   products: ProductItemFragment[];
   categories: Category[];
 }) {
+  const swiper = useSwiper();
   return (
     <div>
       {categories.map((category, index) => {
@@ -153,6 +157,15 @@ function ProductsGrid({
               <h1 className="md:text-4xl text-2xl font-bold">
                 {category.display_name}
               </h1>
+
+              <div className="md:flex items-center hidden">
+                <button className="mr-2" onClick={() => swiper.slidePrev()}>
+                  <img src={leftArrow} alt="left_arrow" />
+                </button>
+                <button onClick={() => swiper.slideNext()}>
+                  <img src={rightArrow} alt="right_arrow" />
+                </button>
+              </div>
             </div>
 
             <Swiper
