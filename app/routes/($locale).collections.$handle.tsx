@@ -142,7 +142,7 @@ function ProductsGrid({
     const container = containerRefs.current[index];
     // Temporarily disable the transition to track touch movement
     container!.style.transition = 'none';
-    container!.scrollLeft -= deltaX;
+    container!.scrollLeft -= deltaX * 20;
   };
 
   const handleTouchEnd = (index: number) => {
@@ -179,7 +179,7 @@ function ProductsGrid({
               onTouchEnd={() => handleTouchEnd(index)}
               style={{
                 display: 'flex',
-                overflowX: 'scroll',
+                overflowX: 'auto',
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
                 // transition: 'scroll-left 0.3s ease-out',
