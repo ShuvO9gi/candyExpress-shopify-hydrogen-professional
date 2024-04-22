@@ -162,7 +162,7 @@ function HeaderCtas({
         </Suspense>
       </NavLink> */}
       <div className="flex">
-        <SearchToggle />
+        {/* <SearchToggle /> */}
         <CartToggle cart={cart} />
       </div>
     </nav>
