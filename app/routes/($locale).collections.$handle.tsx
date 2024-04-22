@@ -155,7 +155,7 @@ function ProductsGrid({
   };
 
   return (
-    <div style={{overflowX: 'hidden'}}>
+    <div style={{overflowX: 'scroll'}}>
       {categories.map((category, index) => {
         const filteredProducts = products.filter((product) =>
           product.tags.includes(category.tag_name),
@@ -179,7 +179,7 @@ function ProductsGrid({
               onTouchEnd={() => handleTouchEnd(index)}
               style={{
                 display: 'flex',
-                overflowX: 'hidden',
+                overflowX: 'scroll',
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
                 // transition: 'scroll-left 0.3s ease-out',
