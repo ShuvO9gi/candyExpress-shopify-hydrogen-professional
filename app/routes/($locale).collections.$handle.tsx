@@ -137,6 +137,8 @@ function ProductsGrid({
               spaceBetween={10}
               navigation
               scrollbar={{hide: true}}
+              speed={500}
+              threshold={10}
               style={{
                 display: 'flex',
                 overflowX: 'hidden',
