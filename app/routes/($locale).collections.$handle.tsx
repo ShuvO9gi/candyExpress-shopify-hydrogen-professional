@@ -124,6 +124,9 @@ function ProductsGrid({
     touchStartX.current = x;
     lastTouchX.current = x;
     isDragging.current = true;
+    //make overFlow scroll smooth for this div
+
+    e.currentTarget.style.overflowX = 'scroll';
   };
 
   const handleTouchMove = (
@@ -171,12 +174,12 @@ function ProductsGrid({
             <div
               ref={(el) => (containerRefs.current[index] = el)}
               className="slider-container"
-              onTouchStart={handleTouchStart}
+              onTouchStart={(e) => handleTouchStart(e)}
               onTouchMove={(e) => handleTouchMove(index, e)}
               onTouchEnd={() => handleTouchEnd(index)}
               style={{
                 display: 'flex',
-                overflowX: 'scroll',
+                overflowX: 'hidden',
                 whiteSpace: 'nowrap',
                 scrollBehavior: 'smooth',
                 // transition: 'scroll-left 0.3s ease-out',
