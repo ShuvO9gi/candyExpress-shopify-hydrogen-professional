@@ -161,10 +161,7 @@ function ProductsGrid({
               scrollbar={{hide: true}}
               onReachEnd={handleReachEnd}
               onReachBeginning={handleReachBeginning}
-              longSwipes={true} // Allow long swipes
-              longSwipesRatio={0.5}
-              touchRatio={1}
-              effect={'slide'}
+              freeMode={true}
               style={{
                 display: 'flex',
                 overflowX: 'hidden',
