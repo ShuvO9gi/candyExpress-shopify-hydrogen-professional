@@ -296,7 +296,7 @@ function ProductsGrid({
         )}
       </div>
       {searchCandy && (
-        <div className="-mx-2 w-auto h-[80px] bg-[#333333]/50 sticky bottom-[28px] lg:bottom-[124px] flex justify-center items-center">
+        <div className="-mx-2 w-auto h-[80px] bg-[#333333]/50 sticky bottom-[28px] lg:bottom-24 flex justify-center items-center">
           <input
             type="search"
             className="w-[50%] h-[50%] rounded text-sm font-normal text-black/50"
@@ -321,7 +321,7 @@ function ProductsGrid({
         </div>
       )}
       {/* {!searchCandy && ( */}
-      <div className="-mx-2 lg:hidden w-[200px] h-7 bg-[#C7F0BD] rounded-se-lg sticky bottom-0 flex items-center">
+      <div className="-mx-2 lg:hidden w-[200px] h-7 bg-[#C7F0BD] rounded-se-lg sticky bottom-[0px] flex items-center">
         <div className="ml-7 flex items-center text-xs font-semibold">
           Search Product Here
           <span
@@ -336,23 +336,37 @@ function ProductsGrid({
         </div>
       </div>
       {/* )} */}
-      <div className="-mx-2 w-auto h-[124px] bg-[#6E4695] sticky bottom-0 hidden lg:flex justify-evenly items-center">
-        <div className="w-48 h-16 text-white">
-          <p className="text-xl">Vægt: 0 g</p>
-          <div className="font-bold text-[32px]">0 DKK</div>
-        </div>
-        <div className="w-[670px] flex justify-between items-center">
-          <button
-            className="hidden w-[50px] h-[50px] rounded-lg bg-[#FFAD05] lg:flex justify-center items-center"
-            onClick={() => setSearchCandy(true)}
-          >
-            <img src={searchWhiteIcon} alt="Search" width={24} height={24} />
-          </button>
-          <div className="w-72 h-[60px] rounded-full border-2 border-white flex items-center justify-center uppercase text-white font-bold text-xl">
-            Watch your bag
+      <div className="-mx-2 w-auto h-20 lg:h-24 bg-[#6E4695] sticky bottom-0 hidden lg:flex justify-evenly items-center">
+        <div className="w-[90%] sm:w-[60%] lg:w-[80%] block mx-auto lg:flex lg:items-center">
+          <div className="text-white flex justify-between lg:w-[40%] lg:h-16 lg:block">
+            <p className="text-sm lg:text-base">
+              <span>Gram</span>: <span>0 g</span>
+            </p>
+            <div className="font-bold text-base lg:text-xl">
+              <span>Pris</span>: <span>0 DKK</span>
+            </div>
           </div>
-          <div className="w-72 h-[60px] rounded-full bg-[#FFAD05] flex items-center justify-center uppercase text-white font-bold text-xl">
-            Buy for 10 nok more
+          <div className="lg:w-[60%] flex justify-between items-center">
+            <div>
+              <button
+                className="mr-7 hidden w-10 h-10 rounded-full bg-[#FFAD05] lg:flex justify-center items-center"
+                onClick={() => setSearchCandy(true)}
+              >
+                <img
+                  src={searchWhiteIcon}
+                  alt="Search"
+                  className="rotate-90"
+                  width={16}
+                  height={16}
+                />
+              </button>
+            </div>
+            <div className="py-1.5 px-0.5 lg:px-2.5 mr-2.5 lg:mr-7 w-[100%] lg:h-[60px] rounded-full border-2 border-white flex items-center justify-center uppercase text-white font-bold text-xs lg:text-base">
+              Watch your bag
+            </div>
+            <div className="py-1.5 px-0.5 lg:px-2.5 lg:mr-7 w-[100%] lg:h-[60px] rounded-full bg-[#FFAD05] flex items-center justify-center uppercase text-white lg:text-nowrap font-bold text-xs lg:text-base">
+              Buy for 10 nok more
+            </div>
           </div>
         </div>
       </div>
