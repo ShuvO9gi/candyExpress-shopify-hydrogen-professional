@@ -142,7 +142,7 @@ function ProductsGrid({
 
   return (
     <>
-      <div>
+      <div className="min-h-screen">
         {searchQuery === '' ? (
           <div>
             {categories.map((category, index) => {
@@ -224,7 +224,7 @@ function ProductsGrid({
             })}
           </div>
         ) : filteredItems.length > 0 ? (
-          <div>
+          <div className="min-h-screen">
             {categories.map((category, index) => {
               const filteredProducts = filteredItems.filter((product) =>
                 product.tags.includes(category.tag_name),
@@ -292,11 +292,11 @@ function ProductsGrid({
             })}
           </div>
         ) : (
-          <div className="h-[100%]"></div>
+          <div className="min-h-screen"></div>
         )}
       </div>
       {searchCandy && (
-        <div className="w-full h-[80px] bg-[#333333]/50 sticky bottom-[28px] lg:bottom-[124px] flex justify-center items-center">
+        <div className="-mx-2 w-auto h-[80px] bg-[#333333]/50 sticky bottom-[28px] lg:bottom-[124px] flex justify-center items-center">
           <input
             type="search"
             className="w-[50%] h-[50%] rounded text-sm font-normal text-black/50"
@@ -321,7 +321,7 @@ function ProductsGrid({
         </div>
       )}
       {/* {!searchCandy && ( */}
-      <div className="lg:hidden w-[200px] h-7 bg-[#C7F0BD] rounded-se-lg sticky bottom-0 flex items-center">
+      <div className="-mx-2 lg:hidden w-[200px] h-7 bg-[#C7F0BD] rounded-se-lg sticky bottom-0 flex items-center">
         <div className="ml-7 flex items-center text-xs font-semibold">
           Search Product Here
           <span
@@ -336,7 +336,7 @@ function ProductsGrid({
         </div>
       </div>
       {/* )} */}
-      <div className="w-auto h-[124px] bg-[#6E4695] sticky bottom-0 hidden lg:flex justify-evenly items-center -mx-2">
+      <div className="-mx-2 w-auto h-[124px] bg-[#6E4695] sticky bottom-0 hidden lg:flex justify-evenly items-center">
         <div className="w-48 h-16 text-white">
           <p className="text-xl">Vægt: 0 g</p>
           <div className="font-bold text-[32px]">0 DKK</div>
