@@ -292,11 +292,11 @@ function ProductsGrid({
             })}
           </div>
         ) : (
-          <div></div>
+          <div className="h-[100%]"></div>
         )}
       </div>
       {searchCandy && (
-        <div className="w-full h-[80px] bg-[#333333]/50 sticky bottom-[28px] lg:bottom-[124px] z-[1] flex justify-center items-center">
+        <div className="w-full h-[80px] bg-[#333333]/50 sticky bottom-[28px] lg:bottom-[124px] flex justify-center items-center">
           <input
             type="search"
             className="w-[50%] h-[50%] rounded text-sm font-normal text-black/50"
@@ -321,7 +321,7 @@ function ProductsGrid({
         </div>
       )}
       {/* {!searchCandy && ( */}
-      <div className="lg:hidden w-[200px] h-7 bg-[#C7F0BD] rounded-se-lg sticky bottom-[0px] z-[1] flex items-center">
+      <div className="lg:hidden w-[200px] h-7 bg-[#C7F0BD] rounded-se-lg sticky bottom-0 flex items-center">
         <div className="ml-7 flex items-center text-xs font-semibold">
           Search Product Here
           <span
@@ -336,10 +336,10 @@ function ProductsGrid({
         </div>
       </div>
       {/* )} */}
-      <div className="w-full h-[124px] bg-[#6E4695] sticky bottom-[0px] hidden lg:flex justify-evenly items-center">
+      <div className="w-auto h-[124px] bg-[#6E4695] sticky bottom-0 hidden lg:flex justify-evenly items-center -mx-2">
         <div className="w-48 h-16 text-white">
-          <p className="text-xl">Vægt: 350 g</p>
-          <div className="font-bold text-[32px]">58,50 DKK</div>
+          <p className="text-xl">Vægt: 0 g</p>
+          <div className="font-bold text-[32px]">0 DKK</div>
         </div>
         <div className="w-[670px] flex justify-between items-center">
           <button
@@ -391,7 +391,7 @@ function ProductItem({
             />
           )}
         </div>
-        <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[144px] h-[130px] md:w-[246px] md:h-[212px] md:mt-[-98px] mt-[-50px] -z-10 flex flex-col items-center">
+        <div className="bg-[#D3B5D1]/[0.2] rounded-[14px] w-[144px] h-[130px] md:w-[246px] md:h-[212px] md:mt-[-98px] mt-[-50px] flex flex-col items-center select-all">
           <h4 className="md:mt-[90px] mt-[40px] font-bold md:text-[18px] text-[14px]">
             {product.title}
           </h4>
