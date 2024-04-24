@@ -14,6 +14,7 @@ import rightArrow from '../../public/right_arrow.svg';
 import closeBlackIcon from '../../public/action/close_icon.svg';
 import searchBlackIcon from '../../public/action/search_black_icon.svg';
 import searchWhiteIcon from '../../public/action/search_white_icon.svg';
+import filterIcon from '../../public/action/filter_icon.svg';
 import React, {useEffect, useRef, useState} from 'react';
 import {useSwiper, Swiper, SwiperSlide} from 'swiper/react';
 
@@ -296,15 +297,15 @@ function ProductsGrid({
         )}
       </div>
       {searchCandy && (
-        <div className="-mx-2 w-auto h-[80px] bg-[#333333]/50 sticky bottom-[28px] lg:bottom-24 flex justify-center items-center">
+        <div className="-mx-2 w-[100%] h-[86px] bg-[#333333]/50 fixed bottom-[28px] lg:bottom-24 flex justify-center items-center">
           <input
             type="search"
             className="w-[50%] h-[50%] rounded text-sm font-normal text-black/50"
-            placeholder="Search your candy"
+            placeholder="Søg efter slik her"
             onChange={(e) => handleInputChange(e)}
           />
           <button
-            className="w-7 h-7 bg-[#FFAD05] flex justify-center items-center absolute right-0 top-0"
+            className="p-0.5 w-10 h-[34px] bg-[#FFAD05] flex justify-center items-center absolute right-1 top-1"
             onClick={() => {
               setSearchCandy(false);
               setSearchQuery('');
@@ -314,16 +315,28 @@ function ProductsGrid({
               className=""
               src={closeBlackIcon}
               alt="close"
-              width={12}
-              height={12}
+              width={14}
+              height={18}
             />
           </button>
         </div>
       )}
       {/* {!searchCandy && ( */}
-      <div className="-mx-2 lg:hidden w-[200px] h-7 bg-[#C7F0BD] rounded-se-lg sticky bottom-[0px] flex items-center">
+      <div className="-mx-2 lg:hidden py-0.5 px-2.5 h-7 bg-[#acddd6] rounded-se-lg fixed bottom-[0px] flex items-center">
         <div className="ml-7 flex items-center text-xs font-semibold">
-          Search Product Here
+          <div>
+            <button
+              className="px-4 lg:flex justify-center items-center text-white"
+              /* onClick={() => setSearchCandy(true)} */
+            >
+              <img
+                src={filterIcon}
+                alt="Search Filter"
+                width={15}
+                height={15}
+              />
+            </button>
+          </div>
           <span
             className="ml-3"
             onClick={() => setSearchCandy(true)}
@@ -331,22 +344,41 @@ function ProductsGrid({
             role="button"
             tabIndex={0}
           >
-            <img src={searchBlackIcon} alt="Search" width={16} height={16} />
+            <img
+              src={searchBlackIcon}
+              alt="Search"
+              className="rotate-90"
+              width={16}
+              height={16}
+            />
           </span>
         </div>
       </div>
       {/* )} */}
-      <div className="-mx-2 w-auto h-20 lg:h-24 bg-[#6E4695] sticky bottom-0 hidden lg:flex justify-evenly items-center">
+      <div className="-mx-2 w-[100%] h-20 lg:h-24 bg-[#6E4695] fixed bottom-0 hidden lg:flex justify-evenly items-center">
         <div className="w-[90%] sm:w-[60%] lg:w-[80%] block mx-auto lg:flex lg:items-center">
           <div className="text-white flex justify-between lg:w-[40%] lg:h-16 lg:block">
             <p className="text-sm lg:text-base">
-              <span>Gram</span>: <span>0 g</span>
+              <span>Gram</span>:<span>0 g</span>
             </p>
             <div className="font-bold text-base lg:text-xl">
               <span>Pris</span>: <span>0 DKK</span>
             </div>
           </div>
           <div className="lg:w-[60%] flex justify-between items-center">
+            <div>
+              <button
+                className="mr-7 hidden w-10 h-10 rounded-full bg-[#FFAD05] lg:flex justify-center items-center text-white"
+                /* onClick={() => setSearchCandy(true)} */
+              >
+                <img
+                  src={filterIcon}
+                  alt="Search Filter"
+                  width={15}
+                  height={15}
+                />
+              </button>
+            </div>
             <div>
               <button
                 className="mr-7 hidden w-10 h-10 rounded-full bg-[#FFAD05] lg:flex justify-center items-center"

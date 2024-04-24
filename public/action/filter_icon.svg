@@ -1,0 +1,6 @@
+<svg class="Icon Icon--filter" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0.5" y1="1.71429" x2="11.5" y2="1.71429" stroke="#5D2E8E" stroke-linecap="round"></line> <line x1="0.5" y1="5.71429" x2="11.5" y2="5.71429" stroke="#5D2E8E" stroke-linecap="round">
+    </line> <line x1="0.5" y1="9.71429" x2="11.5" y2="9.71429" stroke="#5D2E8E" stroke-linecap="round"></line> <circle cx="7.5" cy="1.71429" r="1.5" fill="#5D2E8E"></circle> 
+    <circle cx="3.5" cy="5.71429" r="1.5" fill="#5D2E8E">
+    </circle> <circle cx="10.5" cy="9.71429" r="1.5" fill="#5D2E8E"></circle>
+</svg>
