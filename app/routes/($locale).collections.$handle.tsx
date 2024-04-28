@@ -16,6 +16,10 @@ import searchBlackIcon from '../../public/action/search_black_icon.svg';
 import searchWhiteIcon from '../../public/action/search_white_icon.svg';
 import filterWhiteIcon from '../../public/action/filter_white_icon.svg';
 import filterBlackIcon from '../../public/action/filter_black_icon.svg';
+import transportIcon from '../../public/logo/transport_icon.svg';
+import hygienicIcon from '../../public/logo/hygienic_icon.svg';
+import watchIcon from '../../public/logo/watch_icon.svg';
+import chocolateIcon from '../../public/logo/chocolate_icon.svg';
 import React, {useEffect, useRef, useState} from 'react';
 import {useSwiper, Swiper, SwiperSlide} from 'swiper/react';
 
@@ -145,6 +149,63 @@ function ProductsGrid({
   return (
     <>
       <div className="min-h-screen">
+        <div className="mb-7 md:mb-[40px] text-2xl md:text-[32px] text-[#323232]">
+          <strong>Bland i dag</strong> — Få det bragt med ekspresfart.
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 justify-between gap-5 m-0 pt-[30px] pb-10 px-2.5">
+          <div className="flex items-center gap-2.5">
+            <div className="w-[50px] h-[50px] md:w-14 md:h-14">
+              <img src={transportIcon} alt="" width={55} height={55} />
+            </div>
+
+            <div className="mb-[14px] md:mb-0 flex flex-col text-[#323232]">
+              <div className="font-bold text-base md:text-xl">Gratis fragt</div>
+              <p className="font-normal text-xs">
+                Køb for over 399 kr. og få gratis fragt
+              </p>
+            </div>
+          </div>
+          <div className="mb-[14px] md:mb-0 flex items-center gap-2.5">
+            <div className="w-[50px] h-[50px] md:w-14 md:h-14">
+              <img src={watchIcon} alt="" width={55} height={55} />
+            </div>
+            <div className="flex flex-col text-[#323232]">
+              <div className="font-bold text-base md:text-xl">
+                Vi sender i dag
+              </div>
+              <p className="font-normal text-xs">
+                Bestil inden 14:00 (alle hverdage)
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-[14px] md:mb-0 flex items-center gap-2.5">
+            <div className="w-[50px] h-[50px] md:w-14 md:h-14">
+              <img src={chocolateIcon} alt="" width={55} height={55} />
+            </div>
+
+            <div className="flex flex-col text-[#323232]">
+              <div className="font-bold text-base md:text-xl">Kæmpe udvalg</div>
+              <p className="font-normal text-xs">
+                &#43;450 varianter direkte fra fabrikken
+              </p>
+            </div>
+          </div>
+          <div className="mb-[14px] md:mb-0 flex items-center gap-2.5">
+            <div className="w-[50px] h-[50px] md:w-14 md:h-14">
+              <img src={hygienicIcon} alt="" width={55} height={55} />
+            </div>
+
+            <div className="flex flex-col text-[#323232]">
+              <div className="font-bold text-base md:text-xl">
+                100% hygiejnisk
+              </div>
+              <p className="font-normal text-xs">
+                Pakket med handsker og hårnet
+              </p>
+            </div>
+          </div>
+        </div>
         {searchQuery === '' ? (
           <div>
             {categories.map((category, index) => {
@@ -301,7 +362,7 @@ function ProductsGrid({
         <div className="-mx-2 w-[100%] h-[86px] bg-[#333333]/50 fixed bottom-20 lg:bottom-20 xl:bottom-[98px] flex justify-center items-center z-[1]">
           <input
             type="search"
-            className="py-2.5 px-3 w-[50%] h-[53%] rounded text-sm font-normal text-black/50"
+            className="py-2.5 w-[50%] h-[53%] rounded text-sm font-normal text-black/50"
             placeholder="Søg efter slik her"
             onChange={(e) => handleInputChange(e)}
           />
