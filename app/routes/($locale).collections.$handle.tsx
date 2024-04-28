@@ -14,7 +14,8 @@ import rightArrow from '../../public/right_arrow.svg';
 import closeBlackIcon from '../../public/action/close_icon.svg';
 import searchBlackIcon from '../../public/action/search_black_icon.svg';
 import searchWhiteIcon from '../../public/action/search_white_icon.svg';
-import filterIcon from '../../public/action/filter_icon.svg';
+import filterWhiteIcon from '../../public/action/filter_white_icon.svg';
+import filterBlackIcon from '../../public/action/filter_black_icon.svg';
 import React, {useEffect, useRef, useState} from 'react';
 import {useSwiper, Swiper, SwiperSlide} from 'swiper/react';
 
@@ -297,10 +298,10 @@ function ProductsGrid({
         )}
       </div>
       {searchCandy && (
-        <div className="-mx-2 w-[100%] h-[86px] bg-[#333333]/50 fixed bottom-[28px] lg:bottom-24 flex justify-center items-center">
+        <div className="-mx-2 w-[100%] h-[86px] bg-[#333333]/50 fixed bottom-20 lg:bottom-20 xl:bottom-[98px] flex justify-center items-center z-[1]">
           <input
             type="search"
-            className="w-[50%] h-[50%] rounded text-sm font-normal text-black/50"
+            className="py-2.5 px-3 w-[50%] h-[53%] rounded text-sm font-normal text-black/50"
             placeholder="Søg efter slik her"
             onChange={(e) => handleInputChange(e)}
           />
@@ -322,15 +323,15 @@ function ProductsGrid({
         </div>
       )}
       {/* {!searchCandy && ( */}
-      <div className="-mx-2 lg:hidden py-0.5 px-2.5 h-7 bg-[#acddd6] rounded-se-lg fixed bottom-[0px] flex items-center">
-        <div className="ml-7 flex items-center text-xs font-semibold">
+      <div className="-mx-2 lg:hidden py-0.5 px-2.5 bg-[#acddd6] rounded-se-[10px] fixed bottom-20 flex items-center">
+        <div className="flex items-center text-xs font-semibold">
           <div>
             <button
-              className="px-4 lg:flex justify-center items-center text-white"
+              className="py-0 px-4 lg:flex justify-center items-center text-white"
               /* onClick={() => setSearchCandy(true)} */
             >
               <img
-                src={filterIcon}
+                src={filterBlackIcon}
                 alt="Search Filter"
                 width={15}
                 height={15}
@@ -338,66 +339,54 @@ function ProductsGrid({
             </button>
           </div>
           <span
-            className="ml-3"
             onClick={() => setSearchCandy(true)}
             onKeyDown={() => setSearchCandy(true)}
             role="button"
             tabIndex={0}
           >
-            <img
-              src={searchBlackIcon}
-              alt="Search"
-              className="rotate-90"
-              width={16}
-              height={16}
-            />
+            <img src={searchBlackIcon} alt="Search" />
           </span>
         </div>
       </div>
       {/* )} */}
-      <div className="-mx-2 w-[100%] h-20 lg:h-24 bg-[#6E4695] fixed bottom-0 hidden lg:flex justify-evenly items-center">
-        <div className="w-[90%] sm:w-[60%] lg:w-[80%] block mx-auto lg:flex lg:items-center">
-          <div className="text-white flex justify-between lg:w-[40%] lg:h-16 lg:block">
+      <div className="-mx-2 w-[100%] h-20 xl:h-[98px] bg-[#6E4695] fixed bottom-0 lg:flex lg:justify-evenly lg:items-center">
+        <div className="w-[90%] h-full sm:w-[415px] lg:w-[768px] xl:w-[1130px] mx-auto flex flex-col justify-center lg:flex-row lg:items-center">
+          <div className="text-white flex flex-row lg:flex-col justify-between lg:justify-center lg:flex-start lg:w-[30%] xl:w-[40%] lg:h-16">
             <p className="text-sm lg:text-base">
-              <span>Gram</span>:<span>0 g</span>
+              <span>Gram</span>: <span>0 g.</span>
             </p>
             <div className="font-bold text-base lg:text-xl">
-              <span>Pris</span>: <span>0 DKK</span>
+              <span>Pris</span>: <span>0 kr.</span>
             </div>
           </div>
-          <div className="lg:w-[60%] flex justify-between items-center">
-            <div>
+          <div className="lg:w-[70%] xl:w-[60%] flex justify-between items-center">
+            <div className="mr-0 lg:mr-[42px]"></div>
+            <div className="lg:py-0 lg:px-4">
               <button
-                className="mr-7 hidden w-10 h-10 rounded-full bg-[#FFAD05] lg:flex justify-center items-center text-white"
+                className="mt-1 mr-1.5 hidden w-[42px] h-[42px] rounded-full bg-[#FFAD05] hover:bg-[#8f93a770] lg:flex justify-center items-center text-white"
                 /* onClick={() => setSearchCandy(true)} */
               >
                 <img
-                  src={filterIcon}
+                  src={filterWhiteIcon}
                   alt="Search Filter"
-                  width={15}
-                  height={15}
-                />
-              </button>
-            </div>
-            <div>
-              <button
-                className="mr-7 hidden w-10 h-10 rounded-full bg-[#FFAD05] lg:flex justify-center items-center"
-                onClick={() => setSearchCandy(true)}
-              >
-                <img
-                  src={searchWhiteIcon}
-                  alt="Search"
-                  className="rotate-90"
                   width={16}
                   height={16}
                 />
               </button>
             </div>
-            <div className="py-1.5 px-0.5 lg:px-2.5 mr-2.5 lg:mr-7 w-[100%] lg:h-[60px] rounded-full border-2 border-white flex items-center justify-center uppercase text-white font-bold text-xs lg:text-base">
-              Watch your bag
+            <div>
+              <button
+                className="mr-[26px] hidden w-[42px] h-[42px] rounded-full bg-[#FFAD05] hover:bg-[#8f93a770] lg:flex justify-center items-center"
+                onClick={() => setSearchCandy(true)}
+              >
+                <img src={searchWhiteIcon} alt="Search" className="" />
+              </button>
             </div>
-            <div className="py-1.5 px-0.5 lg:px-2.5 lg:mr-7 w-[100%] lg:h-[60px] rounded-full bg-[#FFAD05] flex items-center justify-center uppercase text-white lg:text-nowrap font-bold text-xs lg:text-base">
-              Buy for 10 nok more
+            <div className="py-1.5 xl:py-0 xl:px-2.5 mt-1 mr-2.5 xl:mt-0 xl:mr-[30px] w-[100%] xl:h-[60px] rounded-full border-2 border-white flex items-center justify-center uppercase text-white font-bold text-xs lg:text-base">
+              SE DIN POSE
+            </div>
+            <div className="py-1.5 xl:py-0 xl:px-2.5 mt-1 xl:mt-0 xl:mr-[30px] w-[100%] xl:h-[60px] rounded-full bg-[#FFAD05] flex items-center justify-center uppercase text-white lg:text-nowrap font-bold text-xs lg:text-base">
+              KØB FOR <span> 0 </span> KR. MERE
             </div>
           </div>
         </div>
