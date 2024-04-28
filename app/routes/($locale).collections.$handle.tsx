@@ -20,6 +20,7 @@ import transportIcon from '../../public/logo/transport_icon.svg';
 import hygienicIcon from '../../public/logo/hygienic_icon.svg';
 import watchIcon from '../../public/logo/watch_icon.svg';
 import chocolateIcon from '../../public/logo/chocolate_icon.svg';
+import downArrow from '../../public/action/down_arrow.svg';
 import React, {useEffect, useRef, useState} from 'react';
 import {useSwiper, Swiper, SwiperSlide} from 'swiper/react';
 
@@ -73,12 +74,15 @@ export default function Collection() {
     const fetchMenuItemsData = async () => {
       try {
         const menuItems: MenuItems = await fetchMenuItems();
+        /* console.log(collection); */
+        console.log(menuItems);
         if (menuItems) {
           setCategories(
             menuItems.data.vertical_menu.map((item: VerticalMenu) => {
               return {
                 display_name: item.display_name,
                 tag_name: item.tag_name,
+                group: item.group,
               };
             }),
           );
@@ -130,7 +134,7 @@ function ProductsGrid({
 }) {
   const swiper = useSwiper();
 
-  /*  */
+  /* search */
   const [searchCandy, setSearchCandy] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState<ProductItemFragment[]>([]);
@@ -145,6 +149,9 @@ function ProductsGrid({
 
     setFilteredItems(filtered);
   };
+
+  /* filter */
+  const [searchFilter, setSearchFilter] = useState(false);
 
   return (
     <>
@@ -206,6 +213,8 @@ function ProductsGrid({
             </div>
           </div>
         </div>
+        {/* {console.log(products)}
+        {console.log(categories)} */}
         {searchQuery === '' ? (
           <div>
             {categories.map((category, index) => {
@@ -389,7 +398,7 @@ function ProductsGrid({
           <div>
             <button
               className="py-0 px-4 lg:flex justify-center items-center text-white"
-              /* onClick={() => setSearchCandy(true)} */
+              onClick={() => setSearchFilter(true)}
             >
               <img
                 src={filterBlackIcon}
@@ -410,6 +419,72 @@ function ProductsGrid({
         </div>
       </div>
       {/* )} */}
+      {searchFilter && (
+        <div className="fixed top-[50px] lg:top-[126px] left-0 w-80 h-full pt-2 pb-20 lg:pt-1 xl:pb-[98px] bg-[#f2f0f2] grid grid-cols-[1fr_5fr] content-start text-[#6E4695] z-10">
+          <div></div>
+          <div className="flex flex-row-reverse">
+            <button
+              className="mt-5 mb-4 py-0 px-5"
+              onClick={() => {
+                setSearchFilter(false);
+                setSearchQuery('');
+              }}
+            >
+              <img
+                className=""
+                src={closeBlackIcon}
+                alt="close"
+                width={16}
+                height={16}
+              />
+            </button>
+          </div>
+          <div></div>
+          <div className="overflow-scroll overflow-x-hidden">
+            <div className="flex items-center justify-between mt-[20px] mb-4 px-5 lg:pl-[10px] font-bold text-base">
+              <span>Søgefiltre</span>
+            </div>
+            <div className="h-full px-5 lg:pl-[10px] lg:pr-[30px] sm:pb-0 overflow-auto">
+              <ul>
+                {categories.map((category, index) => {
+                  const filteredProducts = products.filter((product) =>
+                    product.tags.includes(category.tag_name),
+                  );
+                  /* console.log(category); */
+
+                  if (!filteredProducts.length) return null;
+
+                  return (
+                    <li className="mb-3 last:mb-0" key={category.tag_name}>
+                      <div className="rounded-md shadow-[0_0_6px_rgba(0,0,0,0.07)]">
+                        <div className="bg-white flex items-center justify-between px-3 py-[10px] border border-filterBorder rounded-md cursor-pointer">
+                          <span className="font-bold text-base">
+                            {/* {console.log(category.group)} */}
+                            {category.group}
+                          </span>
+                          <span className="flex items-center justify-center w-5 h-5 transition-transform duration-200 ease-in-out">
+                            <img src={downArrow} alt="Expand area" />
+                          </span>
+                        </div>
+                        <div className="overflow-scroll max-h-[116px]">
+                          <ul className="scrollbar-style">
+                            <li className="flex items-center justify-between px-3 py-[10px] first:pt-5 last:pb-5 cursor-pointer group">
+                              <p className="font-normal text-base group-active:text-[#FFAD05] transition-color duration-100 ease-out">
+                                {category.display_name}
+                              </p>
+                              <div className="w-3 h-3 ml-5 border-2 border-[#FFAD05] rounded-full group-active:bg-[#FFAD05] transition-color duration-100 ease-out"></div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="-mx-2 w-[100%] h-20 xl:h-[98px] bg-[#6E4695] fixed bottom-0 lg:flex lg:justify-evenly lg:items-center">
         <div className="w-[90%] h-full sm:w-[415px] lg:w-[768px] xl:w-[1130px] mx-auto flex flex-col justify-center lg:flex-row lg:items-center">
           <div className="text-white flex flex-row lg:flex-col justify-between lg:justify-center lg:flex-start lg:w-[30%] xl:w-[40%] lg:h-16">
@@ -425,7 +500,10 @@ function ProductsGrid({
             <div className="lg:py-0 lg:px-4">
               <button
                 className="mt-1 mr-1.5 hidden w-[42px] h-[42px] rounded-full bg-[#FFAD05] hover:bg-[#8f93a770] lg:flex justify-center items-center text-white"
-                /* onClick={() => setSearchCandy(true)} */
+                onClick={() => {
+                  setSearchFilter(true);
+                  console.log('filter');
+                }}
               >
                 <img
                   src={filterWhiteIcon}

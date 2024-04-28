@@ -387,6 +387,10 @@ aside li {
   overflow: hidden;
 }
 
+.scrollbar-style::-webkit-scrollbar {
+  width: 12px;
+}
+
 /*
 * --------------------------------------------------
 * routes/products.$handle.tsx
