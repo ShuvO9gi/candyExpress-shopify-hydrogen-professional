@@ -40,3 +40,7 @@ export interface Category {
 export interface Groups {
   group: string;
 }
+
+export interface ShowListState {
+  [key: string]: boolean;
+}

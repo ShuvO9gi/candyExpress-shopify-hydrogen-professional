@@ -31,6 +31,7 @@ import type {
   TopMenu,
   VerticalMenu,
   Groups,
+  ShowListState,
 } from '~/dtos/collections.dto';
 
 import 'node_modules/swiper/swiper.css';
@@ -136,6 +137,10 @@ async function fetchMenuItems(): Promise<MenuItems> {
   }
 }
 
+/* type ShowListState = {
+  [key: string]: boolean;
+}; */
+
 function ProductsGrid({
   products,
   categories,
@@ -166,7 +171,17 @@ function ProductsGrid({
   /* filter */
   const [searchFilter, setSearchFilter] = useState(false);
 
-  const [showList, setShowList] = useState(false);
+  const [showList, setShowList] = useState<ShowListState>({});
+
+  const [checkedItems, setCheckedItems] = useState<string[]>([]);
+
+  const handleClick = (tag_name: string) => {
+    if (checkedItems.includes(tag_name)) {
+      setCheckedItems(checkedItems.filter((item) => item !== tag_name));
+    } else {
+      setCheckedItems([...checkedItems, tag_name]);
+    }
+  };
 
   return (
     <>
@@ -464,7 +479,7 @@ function ProductsGrid({
               <ul>
                 {groups.map((groupName, index) => {
                   const filteredTitles = categories.filter((productTitle) => {
-                    return productTitle.group == groupName.group;
+                    return productTitle.group === groupName.group;
                   });
 
                   /* if (!filteredTitles.length) return null; */
@@ -476,34 +491,85 @@ function ProductsGrid({
                           <span className="font-bold text-base capitalize">
                             {groupName.group}
                           </span>
-                          {/*  {!showList && ( */}
-                          <span className="flex items-center justify-center w-5 h-5 transition-transform duration-200 ease-in-out">
-                            <img src={downArrow} alt="Expand" />
-                          </span>
-                          {/* )} */}
-                          {/* {showList && (
-                          <span className="flex items-center justify-center w-5 h-5 transition-transform duration-200 ease-in-out">
-                            <img src={upArrow} alt="Collapse" />
-                          </span>
-                          )} */}
+                          <button
+                            className="flex items-center justify-center w-5 h-5 transition-transform duration-200 ease-in-out"
+                            /* onClick={() => {
+                              setShowList(true);
+                              setShowUp(true);
+                              if (showList || showUp) {
+                                setShowList(false);
+                                setShowUp(false);
+                              }
+                            }} */
+                            onClick={() =>
+                              setShowList((prevState) => ({
+                                ...prevState,
+                                [groupName.group]: !prevState[groupName.group],
+                              }))
+                            }
+                          >
+                            {console.log(showList)}
+                            {!showList[groupName.group] && (
+                              <img src={downArrow} alt="Expand" />
+                            )}
+                            {showList[groupName.group] && (
+                              <img
+                                className="-rotate-180"
+                                src={downArrow}
+                                alt="Expand"
+                              />
+                            )}
+                          </button>
                         </div>
-                        {/* {showList && ( */}
+
                         <div className="overflow-y-scroll max-h-[116px]">
                           <ul className="scrollbar-style">
-                            {filteredTitles.map((groupTitle) => (
-                              <li
-                                className="flex items-center justify-between px-3 py-[10px] first:pt-5 last:pb-5 cursor-pointer group"
-                                key={groupTitle.tag_name}
-                              >
-                                <p className="font-normal text-base group-active:text-[#FFAD05] transition-color duration-100 ease-out">
-                                  {groupTitle.display_name}
-                                </p>
-                                <div className="w-3 h-3 ml-5 border-2 border-[#FFAD05] rounded-full group-active:bg-[#FFAD05] transition-color duration-100 ease-out"></div>
-                              </li>
-                            ))}
+                            {filteredTitles.map(
+                              (groupTitle) =>
+                                showList[groupName.group] && (
+                                  <li
+                                    className={`flex items-center justify-between px-3 py-[10px] first:pt-5 last:pb-5 cursor-pointer group ${
+                                      showList[groupName.group]
+                                        ? 'group-active'
+                                        : ''
+                                    }`}
+                                    key={groupTitle.tag_name}
+                                    onClick={() =>
+                                      handleClick(groupTitle.tag_name)
+                                    }
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' || e.key === ' ') {
+                                        handleClick(groupTitle.tag_name);
+                                      }
+                                    }}
+                                    role="button"
+                                    tabIndex={0}
+                                  >
+                                    <p
+                                      className={`font-normal text-base group-active:text-[#FFAD05] transition-color duration-100 ease-out ${
+                                        checkedItems.includes(
+                                          groupTitle.tag_name,
+                                        )
+                                          ? 'text-[#FFAD05]'
+                                          : ''
+                                      }`}
+                                    >
+                                      {groupTitle.display_name}
+                                    </p>
+                                    <div
+                                      className={`w-3 h-3 ml-5 border-2 border-[#FFAD05] rounded-full group-active:bg-[#FFAD05] transition-color duration-100 ease-out ${
+                                        checkedItems.includes(
+                                          groupTitle.tag_name,
+                                        )
+                                          ? 'bg-[#FFAD05]'
+                                          : ''
+                                      }`}
+                                    ></div>
+                                  </li>
+                                ),
+                            )}
                           </ul>
                         </div>
-                        {/* )} */}
                       </div>
                     </li>
                   );
