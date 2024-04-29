@@ -387,8 +387,14 @@ aside li {
   overflow: hidden;
 }
 
-.scrollbar-style::-webkit-scrollbar {
+.filter__item__wrapper ul ::-webkit-scrollbar {
   width: 12px;
+}
+
+.filter__item__wrapper ul ::-webkit-scrollbar-thumb {
+  background-color: #ffad05;
+  border-radius: 20px;
+  border: 3px solid #f2f0f2;
 }
 
 /*

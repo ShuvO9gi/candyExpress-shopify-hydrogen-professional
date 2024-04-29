@@ -34,4 +34,9 @@ export interface VerticalMenu {
 export interface Category {
   display_name: string;
   tag_name: string;
+  group: string;
+}
+
+export interface Groups {
+  group: string;
 }

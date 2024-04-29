@@ -21,6 +21,7 @@ import hygienicIcon from '../../public/logo/hygienic_icon.svg';
 import watchIcon from '../../public/logo/watch_icon.svg';
 import chocolateIcon from '../../public/logo/chocolate_icon.svg';
 import downArrow from '../../public/action/down_arrow.svg';
+import upArrow from '../../public/action/up_arrow.svg';
 import React, {useEffect, useRef, useState} from 'react';
 import {useSwiper, Swiper, SwiperSlide} from 'swiper/react';
 
@@ -29,6 +30,7 @@ import type {
   MenuItems,
   TopMenu,
   VerticalMenu,
+  Groups,
 } from '~/dtos/collections.dto';
 
 import 'node_modules/swiper/swiper.css';
@@ -69,13 +71,12 @@ export default function Collection() {
   // return '';
   const {collection} = useLoaderData<typeof loader>();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [groups, setGroups] = useState<Groups[]>([]);
 
   useEffect(() => {
     const fetchMenuItemsData = async () => {
       try {
         const menuItems: MenuItems = await fetchMenuItems();
-        /* console.log(collection); */
-        console.log(menuItems);
         if (menuItems) {
           setCategories(
             menuItems.data.vertical_menu.map((item: VerticalMenu) => {
@@ -85,6 +86,15 @@ export default function Collection() {
                 group: item.group,
               };
             }),
+          );
+          setGroups(
+            Array.from(
+              new Set(
+                menuItems.data.vertical_menu.flatMap(
+                  (item: VerticalMenu) => item.group,
+                ),
+              ),
+            ).map((group) => ({group})),
           );
         } else {
           console.log('Failed to fetch menu items');
@@ -102,6 +112,7 @@ export default function Collection() {
       <ProductsGrid
         products={collection.products.nodes}
         categories={categories}
+        groups={groups}
       />
     </div>
   );
@@ -128,9 +139,11 @@ async function fetchMenuItems(): Promise<MenuItems> {
 function ProductsGrid({
   products,
   categories,
+  groups,
 }: {
   products: ProductItemFragment[];
   categories: Category[];
+  groups: Groups[];
 }) {
   const swiper = useSwiper();
 
@@ -152,6 +165,8 @@ function ProductsGrid({
 
   /* filter */
   const [searchFilter, setSearchFilter] = useState(false);
+
+  const [showList, setShowList] = useState(false);
 
   return (
     <>
@@ -213,8 +228,7 @@ function ProductsGrid({
             </div>
           </div>
         </div>
-        {/* {console.log(products)}
-        {console.log(categories)} */}
+
         {searchQuery === '' ? (
           <div>
             {categories.map((category, index) => {
@@ -368,7 +382,7 @@ function ProductsGrid({
         )}
       </div>
       {searchCandy && (
-        <div className="-mx-2 w-[100%] h-[86px] bg-[#333333]/50 fixed bottom-20 lg:bottom-20 xl:bottom-[98px] flex justify-center items-center z-[1]">
+        <div className="-mx-2 w-[100%] h-[86px] bg-[#333333]/50 fixed bottom-20 lg:bottom-20 xl:bottom-[98px] flex justify-center items-center z-30">
           <input
             type="search"
             className="py-2.5 w-[50%] h-[53%] rounded text-sm font-normal text-black/50"
@@ -393,21 +407,23 @@ function ProductsGrid({
         </div>
       )}
       {/* {!searchCandy && ( */}
-      <div className="-mx-2 lg:hidden py-0.5 px-2.5 bg-[#acddd6] rounded-se-[10px] fixed bottom-20 flex items-center">
+      <div className="-mx-2 lg:hidden py-0.5 px-2.5 bg-[#acddd6] rounded-se-[10px] fixed bottom-20 flex items-center z-20">
         <div className="flex items-center text-xs font-semibold">
-          <div>
-            <button
-              className="py-0 px-4 lg:flex justify-center items-center text-white"
-              onClick={() => setSearchFilter(true)}
-            >
-              <img
-                src={filterBlackIcon}
-                alt="Search Filter"
-                width={15}
-                height={15}
-              />
-            </button>
-          </div>
+          {!searchFilter && (
+            <div>
+              <button
+                className="py-0 px-4 lg:flex justify-center items-center text-white"
+                onClick={() => setSearchFilter(true)}
+              >
+                <img
+                  src={filterBlackIcon}
+                  alt="Search Filter"
+                  width={15}
+                  height={15}
+                />
+              </button>
+            </div>
+          )}
           <span
             onClick={() => setSearchCandy(true)}
             onKeyDown={() => setSearchCandy(true)}
@@ -420,7 +436,7 @@ function ProductsGrid({
       </div>
       {/* )} */}
       {searchFilter && (
-        <div className="fixed top-[50px] lg:top-[126px] left-0 w-80 h-full pt-2 pb-20 lg:pt-1 xl:pb-[98px] bg-[#f2f0f2] grid grid-cols-[1fr_5fr] content-start text-[#6E4695] z-10">
+        <div className="fixed top-[126px] left-0 bottom-[80px] w-80 h-full pt-2 pb-20 lg:pt-1 xl:pb-[98px] bg-[#f2f0f2] grid grid-cols-[1fr_5fr] content-start text-[#6E4695] z-10">
           <div></div>
           <div className="flex flex-row-reverse">
             <button
@@ -440,42 +456,54 @@ function ProductsGrid({
             </button>
           </div>
           <div></div>
-          <div className="overflow-scroll overflow-x-hidden">
+          <div>
             <div className="flex items-center justify-between mt-[20px] mb-4 px-5 lg:pl-[10px] font-bold text-base">
               <span>Søgefiltre</span>
             </div>
-            <div className="h-full px-5 lg:pl-[10px] lg:pr-[30px] sm:pb-0 overflow-auto">
+            <div className="filter__item__wrapper h-full px-5 lg:pl-[10px] lg:pr-[30px] sm:pb-0 overflow-y-auto">
               <ul>
-                {categories.map((category, index) => {
-                  const filteredProducts = products.filter((product) =>
-                    product.tags.includes(category.tag_name),
-                  );
-                  /* console.log(category); */
+                {groups.map((groupName, index) => {
+                  const filteredTitles = categories.filter((productTitle) => {
+                    return productTitle.group == groupName.group;
+                  });
 
-                  if (!filteredProducts.length) return null;
+                  /* if (!filteredTitles.length) return null; */
 
                   return (
-                    <li className="mb-3 last:mb-0" key={category.tag_name}>
+                    <li className="mb-3 last:mb-0" key={groupName.group}>
                       <div className="rounded-md shadow-[0_0_6px_rgba(0,0,0,0.07)]">
                         <div className="bg-white flex items-center justify-between px-3 py-[10px] border border-filterBorder rounded-md cursor-pointer">
-                          <span className="font-bold text-base">
-                            {/* {console.log(category.group)} */}
-                            {category.group}
+                          <span className="font-bold text-base capitalize">
+                            {groupName.group}
                           </span>
+                          {/*  {!showList && ( */}
                           <span className="flex items-center justify-center w-5 h-5 transition-transform duration-200 ease-in-out">
-                            <img src={downArrow} alt="Expand area" />
+                            <img src={downArrow} alt="Expand" />
                           </span>
+                          {/* )} */}
+                          {/* {showList && (
+                          <span className="flex items-center justify-center w-5 h-5 transition-transform duration-200 ease-in-out">
+                            <img src={upArrow} alt="Collapse" />
+                          </span>
+                          )} */}
                         </div>
-                        <div className="overflow-scroll max-h-[116px]">
+                        {/* {showList && ( */}
+                        <div className="overflow-y-scroll max-h-[116px]">
                           <ul className="scrollbar-style">
-                            <li className="flex items-center justify-between px-3 py-[10px] first:pt-5 last:pb-5 cursor-pointer group">
-                              <p className="font-normal text-base group-active:text-[#FFAD05] transition-color duration-100 ease-out">
-                                {category.display_name}
-                              </p>
-                              <div className="w-3 h-3 ml-5 border-2 border-[#FFAD05] rounded-full group-active:bg-[#FFAD05] transition-color duration-100 ease-out"></div>
-                            </li>
+                            {filteredTitles.map((groupTitle) => (
+                              <li
+                                className="flex items-center justify-between px-3 py-[10px] first:pt-5 last:pb-5 cursor-pointer group"
+                                key={groupTitle.tag_name}
+                              >
+                                <p className="font-normal text-base group-active:text-[#FFAD05] transition-color duration-100 ease-out">
+                                  {groupTitle.display_name}
+                                </p>
+                                <div className="w-3 h-3 ml-5 border-2 border-[#FFAD05] rounded-full group-active:bg-[#FFAD05] transition-color duration-100 ease-out"></div>
+                              </li>
+                            ))}
                           </ul>
                         </div>
+                        {/* )} */}
                       </div>
                     </li>
                   );
@@ -485,7 +513,7 @@ function ProductsGrid({
           </div>
         </div>
       )}
-      <div className="-mx-2 w-[100%] h-20 xl:h-[98px] bg-[#6E4695] fixed bottom-0 lg:flex lg:justify-evenly lg:items-center">
+      <div className="-mx-2 w-[100%] h-20 xl:h-[98px] bg-[#6E4695] fixed bottom-0 lg:flex lg:justify-evenly lg:items-center z-20">
         <div className="w-[90%] h-full sm:w-[415px] lg:w-[768px] xl:w-[1130px] mx-auto flex flex-col justify-center lg:flex-row lg:items-center">
           <div className="text-white flex flex-row lg:flex-col justify-between lg:justify-center lg:flex-start lg:w-[30%] xl:w-[40%] lg:h-16">
             <p className="text-sm lg:text-base">
@@ -502,7 +530,6 @@ function ProductsGrid({
                 className="mt-1 mr-1.5 hidden w-[42px] h-[42px] rounded-full bg-[#FFAD05] hover:bg-[#8f93a770] lg:flex justify-center items-center text-white"
                 onClick={() => {
                   setSearchFilter(true);
-                  console.log('filter');
                 }}
               >
                 <img
