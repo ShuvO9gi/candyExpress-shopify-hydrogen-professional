@@ -254,7 +254,7 @@ function ProductsGrid({
             </div>
           </div>
         </div>
-        {!(checkedItems.length > 0) ? (
+        {/* {!(checkedItems.length > 0) ? (
           searchQuery === '' ? (
             <div>
               {categories.map((category, index) => {
@@ -543,6 +543,174 @@ function ProductsGrid({
             })}
           </div>
         ) : (
+          <div className="min-h-screen"></div>
+        )} */}
+
+        {!(checkedItems.length > 0) && searchQuery === '' && (
+          <div>
+            {categories.map((category, index) => {
+              const filteredProducts = products.filter((product) =>
+                product.tags.includes(category.tag_name),
+              );
+
+              if (!filteredProducts.length) return null;
+
+              return (
+                <div key={category.tag_name}>
+                  {/* Render category header */}
+                  <h1 className="md:text-4xl text-2xl font-bold">
+                    {category.display_name}
+                  </h1>
+
+                  {/* Render products */}
+                  <Swiper
+                    slidesPerView={'auto'}
+                    spaceBetween={10}
+                    navigation
+                    scrollbar={{hide: true}}
+                    freeMode={true}
+                    modules={[FreeMode]}
+                    style={{
+                      display: 'flex',
+                      overflowX: 'hidden',
+                      whiteSpace: 'nowrap',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    {filteredProducts.map((product, idx) => (
+                      <SwiperSlide
+                        key={`${product.id}-${idx}`}
+                        className="md:mr-5"
+                      >
+                        <ProductItem product={product} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {checkedItems.length > 0 && searchQuery === '' && (
+          <div className="min-h-screen">
+            {categories.map((category, index) => {
+              const filteredProducts = sortedItems.filter((product) =>
+                product.tags.includes(category.tag_name),
+              );
+
+              const handleReachEnd = () => {
+                // Add animation effect when reaching the end
+                const slider = document.querySelector('.swiper-wrapper');
+                if (slider) {
+                  slider.classList.add('bounce-end');
+                  setTimeout(() => {
+                    slider.classList.remove('bounce-end');
+                  }, 500); // Duration of the animation
+                }
+              };
+
+              const handleReachBeginning = () => {
+                // Add animation effect when reaching the beginning
+                const slider = document.querySelector('.swiper-wrapper');
+                if (slider) {
+                  slider.classList.add('bounce-start');
+                  setTimeout(() => {
+                    slider.classList.remove('bounce-start');
+                  }, 500); // Duration of the animation
+                }
+              };
+
+              if (!filteredProducts.length) return null;
+
+              return (
+                <div key={category.tag_name}>
+                  <div className="flex justify-between items-center md:mb-8 mb-4">
+                    <h1 className="md:text-4xl text-2xl font-bold">
+                      {category.display_name}
+                    </h1>
+                  </div>
+
+                  <Swiper
+                    slidesPerView={'auto'}
+                    spaceBetween={10}
+                    navigation
+                    scrollbar={{hide: true}}
+                    onReachEnd={handleReachEnd}
+                    onReachBeginning={handleReachBeginning}
+                    freeMode={true}
+                    modules={[FreeMode]}
+                    style={{
+                      display: 'flex',
+                      overflowX: 'hidden',
+                      whiteSpace: 'nowrap',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    {filteredProducts.map((product, idx) => (
+                      <SwiperSlide
+                        key={`${product.id}-${idx}`}
+                        className="md:mr-5"
+                      >
+                        <ProductItem product={product} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Handle search */}
+        {searchQuery !== '' && (
+          <div>
+            {categories.map((category, index) => {
+              const filteredProducts = filteredItems.filter((product) =>
+                product.tags.includes(category.tag_name),
+              );
+
+              if (!filteredProducts.length) return null;
+
+              return (
+                <div key={category.tag_name}>
+                  {/* Render category header */}
+                  <h1 className="md:text-4xl text-2xl font-bold">
+                    {category.display_name}
+                  </h1>
+
+                  {/* Render products */}
+                  <Swiper
+                    slidesPerView={'auto'}
+                    spaceBetween={10}
+                    navigation
+                    scrollbar={{hide: true}}
+                    freeMode={true}
+                    modules={[FreeMode]}
+                    style={{
+                      display: 'flex',
+                      overflowX: 'hidden',
+                      whiteSpace: 'nowrap',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    {filteredProducts.map((product, idx) => (
+                      <SwiperSlide
+                        key={`${product.id}-${idx}`}
+                        className="md:mr-5"
+                      >
+                        <ProductItem product={product} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Default rendering */}
+        {checkedItems.length === 0 && searchQuery === '' && (
           <div className="min-h-screen"></div>
         )}
       </div>
