@@ -49,7 +49,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {handle} = params;
   const {storefront} = context;
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 200,
+    pageBy: 250,
   });
 
   if (!handle) {
@@ -88,15 +88,17 @@ export default function Collection() {
               };
             }),
           );
-          setGroups(
-            Array.from(
-              new Set(
-                menuItems.data.vertical_menu.flatMap(
-                  (item: VerticalMenu) => item.group,
-                ),
-              ),
-            ).map((group) => ({group})),
-          );
+
+          const uniqueGroups: string[] = [];
+          menuItems.data.vertical_menu.forEach((item) => {
+            if (!uniqueGroups.includes(item.group)) {
+              uniqueGroups.push(item.group);
+            }
+          });
+          console.log(uniqueGroups);
+          const groupsData: Groups[] = uniqueGroups.map((group) => ({group}));
+          console.log(groupsData);
+          setGroups(groupsData);
         } else {
           console.log('Failed to fetch menu items');
         }
@@ -182,6 +184,10 @@ function ProductsGrid({
       setCheckedItems([...checkedItems, tag_name]);
     }
   };
+
+  console.log(checkedItems);
+  console.log(products);
+  console.log(categories);
 
   return (
     <>
@@ -331,6 +337,7 @@ function ProductsGrid({
                 product.tags.includes(category.tag_name),
               );
 
+              console.log(filteredProducts);
               const handleReachEnd = () => {
                 // Add animation effect when reaching the end
                 const slider = document.querySelector('.swiper-wrapper');
@@ -493,14 +500,6 @@ function ProductsGrid({
                           </span>
                           <button
                             className="flex items-center justify-center w-5 h-5 transition-transform duration-200 ease-in-out"
-                            /* onClick={() => {
-                              setShowList(true);
-                              setShowUp(true);
-                              if (showList || showUp) {
-                                setShowList(false);
-                                setShowUp(false);
-                              }
-                            }} */
                             onClick={() =>
                               setShowList((prevState) => ({
                                 ...prevState,
@@ -516,7 +515,7 @@ function ProductsGrid({
                               <img
                                 className="-rotate-180"
                                 src={downArrow}
-                                alt="Expand"
+                                alt="Collapse"
                               />
                             )}
                           </button>
@@ -535,11 +534,11 @@ function ProductsGrid({
                                     }`}
                                     key={groupTitle.tag_name}
                                     onClick={() =>
-                                      handleClick(groupTitle.tag_name)
+                                      handleClick(groupTitle.display_name)
                                     }
                                     onKeyDown={(e) => {
                                       if (e.key === 'Enter' || e.key === ' ') {
-                                        handleClick(groupTitle.tag_name);
+                                        handleClick(groupTitle.display_name);
                                       }
                                     }}
                                     role="button"
@@ -548,7 +547,7 @@ function ProductsGrid({
                                     <p
                                       className={`font-normal text-base group-active:text-[#FFAD05] transition-color duration-100 ease-out ${
                                         checkedItems.includes(
-                                          groupTitle.tag_name,
+                                          groupTitle.display_name,
                                         )
                                           ? 'text-[#FFAD05]'
                                           : ''
@@ -559,7 +558,7 @@ function ProductsGrid({
                                     <div
                                       className={`w-3 h-3 ml-5 border-2 border-[#FFAD05] rounded-full group-active:bg-[#FFAD05] transition-color duration-100 ease-out ${
                                         checkedItems.includes(
-                                          groupTitle.tag_name,
+                                          groupTitle.display_name,
                                         )
                                           ? 'bg-[#FFAD05]'
                                           : ''
