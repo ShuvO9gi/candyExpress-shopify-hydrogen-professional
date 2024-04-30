@@ -95,9 +95,11 @@ export default function Collection() {
               uniqueGroups.push(item.group);
             }
           });
-          console.log(uniqueGroups);
-          const groupsData: Groups[] = uniqueGroups.map((group) => ({group}));
-          console.log(groupsData);
+
+          const groupsData: Groups[] = uniqueGroups.map((groups) => ({
+            group: groups,
+          }));
+
           setGroups(groupsData);
         } else {
           console.log('Failed to fetch menu items');
@@ -139,10 +141,6 @@ async function fetchMenuItems(): Promise<MenuItems> {
   }
 }
 
-/* type ShowListState = {
-  [key: string]: boolean;
-}; */
-
 function ProductsGrid({
   products,
   categories,
@@ -159,35 +157,42 @@ function ProductsGrid({
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState<ProductItemFragment[]>([]);
 
+  /* filter */
+  const [searchFilter, setSearchFilter] = useState(false);
+  const [showList, setShowList] = useState<ShowListState>({});
+  const [sortedItems, setSortedItems] = useState<ProductItemFragment[]>([]);
+  const [checkedItems, setCheckedItems] = useState<string[]>([]);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
     setSearchQuery(query);
 
-    const filtered = products.filter((item: ProductItemFragment) =>
-      item.title.toLowerCase().includes(query.toLowerCase()),
-    );
-
-    setFilteredItems(filtered);
+    if (!(checkedItems.length > 0)) {
+      const filtered = products.filter((item: ProductItemFragment) =>
+        item.title.toLowerCase().includes(query.toLowerCase()),
+      );
+      setFilteredItems(filtered);
+    } else {
+      const filtered = sortedItems.filter((item: ProductItemFragment) =>
+        item.title.toLowerCase().includes(query.toLowerCase()),
+      );
+      setFilteredItems(filtered);
+    }
   };
 
-  /* filter */
-  const [searchFilter, setSearchFilter] = useState(false);
-
-  const [showList, setShowList] = useState<ShowListState>({});
-
-  const [checkedItems, setCheckedItems] = useState<string[]>([]);
-
   const handleClick = (tag_name: string) => {
+    setSearchQuery('');
     if (checkedItems.includes(tag_name)) {
       setCheckedItems(checkedItems.filter((item) => item !== tag_name));
     } else {
       setCheckedItems([...checkedItems, tag_name]);
     }
-  };
 
-  console.log(checkedItems);
-  console.log(products);
-  console.log(categories);
+    const sorted = products.filter((item: ProductItemFragment) =>
+      item.tags.includes(tag_name),
+    );
+    setSortedItems(sorted);
+  };
 
   return (
     <>
@@ -249,11 +254,162 @@ function ProductsGrid({
             </div>
           </div>
         </div>
+        {!(checkedItems.length > 0) ? (
+          searchQuery === '' ? (
+            <div>
+              {categories.map((category, index) => {
+                const filteredProducts = products.filter((product) =>
+                  product.tags.includes(category.tag_name),
+                );
 
-        {searchQuery === '' ? (
-          <div>
+                const handleReachEnd = () => {
+                  // Add animation effect when reaching the end
+                  const slider = document.querySelector('.swiper-wrapper');
+                  if (slider) {
+                    slider.classList.add('bounce-end');
+                    setTimeout(() => {
+                      slider.classList.remove('bounce-end');
+                    }, 500); // Duration of the animation
+                  }
+                };
+
+                const handleReachBeginning = () => {
+                  // Add animation effect when reaching the beginning
+                  const slider = document.querySelector('.swiper-wrapper');
+                  if (slider) {
+                    slider.classList.add('bounce-start');
+                    setTimeout(() => {
+                      slider.classList.remove('bounce-start');
+                    }, 500); // Duration of the animation
+                  }
+                };
+
+                if (!filteredProducts.length) return null;
+
+                return (
+                  <div key={category.tag_name}>
+                    <div className="flex justify-between items-center md:mb-8 mb-4">
+                      <h1 className="md:text-4xl text-2xl font-bold">
+                        {category.display_name}
+                      </h1>
+
+                      <div className="md:flex items-center hidden">
+                        <button
+                          className="mr-2"
+                          onClick={() => swiper.slidePrev()}
+                        >
+                          <img src={leftArrow} alt="left_arrow" />
+                        </button>
+                        <button onClick={() => swiper.slideNext()}>
+                          <img src={rightArrow} alt="right_arrow" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <Swiper
+                      slidesPerView={'auto'}
+                      spaceBetween={10}
+                      navigation
+                      scrollbar={{hide: true}}
+                      onReachEnd={handleReachEnd}
+                      onReachBeginning={handleReachBeginning}
+                      freeMode={true}
+                      modules={[FreeMode]}
+                      style={{
+                        display: 'flex',
+                        overflowX: 'hidden',
+                        whiteSpace: 'nowrap',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      {filteredProducts.map((product, idx) => (
+                        <SwiperSlide
+                          key={`${product.id}-${idx}`}
+                          className="md:mr-5"
+                        >
+                          <ProductItem product={product} />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
+                );
+              })}
+            </div>
+          ) : filteredItems.length > 0 ? (
+            <div className="min-h-screen">
+              {categories.map((category, index) => {
+                const filteredProducts = filteredItems.filter((product) =>
+                  product.tags.includes(category.tag_name),
+                );
+
+                const handleReachEnd = () => {
+                  // Add animation effect when reaching the end
+                  const slider = document.querySelector('.swiper-wrapper');
+                  if (slider) {
+                    slider.classList.add('bounce-end');
+                    setTimeout(() => {
+                      slider.classList.remove('bounce-end');
+                    }, 500); // Duration of the animation
+                  }
+                };
+
+                const handleReachBeginning = () => {
+                  // Add animation effect when reaching the beginning
+                  const slider = document.querySelector('.swiper-wrapper');
+                  if (slider) {
+                    slider.classList.add('bounce-start');
+                    setTimeout(() => {
+                      slider.classList.remove('bounce-start');
+                    }, 500); // Duration of the animation
+                  }
+                };
+
+                if (!filteredProducts.length) return null;
+
+                return (
+                  <div key={category.tag_name}>
+                    <div className="flex justify-between items-center md:mb-8 mb-4">
+                      <h1 className="md:text-4xl text-2xl font-bold">
+                        {category.display_name}
+                      </h1>
+                    </div>
+
+                    <Swiper
+                      slidesPerView={'auto'}
+                      spaceBetween={10}
+                      navigation
+                      scrollbar={{hide: true}}
+                      onReachEnd={handleReachEnd}
+                      onReachBeginning={handleReachBeginning}
+                      freeMode={true}
+                      modules={[FreeMode]}
+                      style={{
+                        display: 'flex',
+                        overflowX: 'hidden',
+                        whiteSpace: 'nowrap',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      {filteredProducts.map((product, idx) => (
+                        <SwiperSlide
+                          key={`${product.id}-${idx}`}
+                          className="md:mr-5"
+                        >
+                          <ProductItem product={product} />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="min-h-screen"></div>
+          )
+        ) : searchQuery === '' ? (
+          <div className="min-h-screen">
             {categories.map((category, index) => {
-              const filteredProducts = products.filter((product) =>
+              const filteredProducts = sortedItems.filter((product) =>
                 product.tags.includes(category.tag_name),
               );
 
@@ -287,18 +443,6 @@ function ProductsGrid({
                     <h1 className="md:text-4xl text-2xl font-bold">
                       {category.display_name}
                     </h1>
-
-                    <div className="md:flex items-center hidden">
-                      <button
-                        className="mr-2"
-                        onClick={() => swiper.slidePrev()}
-                      >
-                        <img src={leftArrow} alt="left_arrow" />
-                      </button>
-                      <button onClick={() => swiper.slideNext()}>
-                        <img src={rightArrow} alt="right_arrow" />
-                      </button>
-                    </div>
                   </div>
 
                   <Swiper
@@ -337,7 +481,6 @@ function ProductsGrid({
                 product.tags.includes(category.tag_name),
               );
 
-              console.log(filteredProducts);
               const handleReachEnd = () => {
                 // Add animation effect when reaching the end
                 const slider = document.querySelector('.swiper-wrapper');
@@ -458,7 +601,7 @@ function ProductsGrid({
       </div>
       {/* )} */}
       {searchFilter && (
-        <div className="fixed top-[126px] left-0 bottom-[80px] w-80 h-full pt-2 pb-20 lg:pt-1 xl:pb-[98px] bg-[#f2f0f2] grid grid-cols-[1fr_5fr] content-start text-[#6E4695] z-10">
+        <div className="fixed top-[126px] right-0 bottom-[80px] w-80 h-full pt-2 pb-20 lg:pt-1 xl:pb-[98px] bg-[#f2f0f2] grid grid-cols-[1fr_5fr] content-start text-[#6E4695] z-10">
           <div></div>
           <div className="flex flex-row-reverse">
             <button
@@ -507,7 +650,6 @@ function ProductsGrid({
                               }))
                             }
                           >
-                            {console.log(showList)}
                             {!showList[groupName.group] && (
                               <img src={downArrow} alt="Expand" />
                             )}
@@ -534,11 +676,11 @@ function ProductsGrid({
                                     }`}
                                     key={groupTitle.tag_name}
                                     onClick={() =>
-                                      handleClick(groupTitle.display_name)
+                                      handleClick(groupTitle.tag_name)
                                     }
                                     onKeyDown={(e) => {
                                       if (e.key === 'Enter' || e.key === ' ') {
-                                        handleClick(groupTitle.display_name);
+                                        handleClick(groupTitle.tag_name);
                                       }
                                     }}
                                     role="button"
@@ -547,7 +689,7 @@ function ProductsGrid({
                                     <p
                                       className={`font-normal text-base group-active:text-[#FFAD05] transition-color duration-100 ease-out ${
                                         checkedItems.includes(
-                                          groupTitle.display_name,
+                                          groupTitle.tag_name,
                                         )
                                           ? 'text-[#FFAD05]'
                                           : ''
@@ -558,7 +700,7 @@ function ProductsGrid({
                                     <div
                                       className={`w-3 h-3 ml-5 border-2 border-[#FFAD05] rounded-full group-active:bg-[#FFAD05] transition-color duration-100 ease-out ${
                                         checkedItems.includes(
-                                          groupTitle.display_name,
+                                          groupTitle.tag_name,
                                         )
                                           ? 'bg-[#FFAD05]'
                                           : ''
