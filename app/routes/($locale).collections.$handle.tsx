@@ -545,200 +545,208 @@ function ProductsGrid({
         ) : (
           <div className="min-h-screen"></div>
         )} */}
+        <div className="min-h-screen">
+          {!(checkedItems.length > 0) && searchQuery === '' && (
+            <div>
+              {categories.map((category, index) => {
+                const filteredProducts = products.filter((product) =>
+                  product.tags.includes(category.tag_name),
+                );
 
-        {!(checkedItems.length > 0) && searchQuery === '' && (
-          <div>
-            {categories.map((category, index) => {
-              const filteredProducts = products.filter((product) =>
-                product.tags.includes(category.tag_name),
-              );
+                if (!filteredProducts.length) return null;
 
-              if (!filteredProducts.length) return null;
-
-              return (
-                <div key={category.tag_name}>
-                  {/* Render category header */}
-                  <h1 className="md:text-4xl text-2xl font-bold">
-                    {category.display_name}
-                  </h1>
-
-                  {/* Render products */}
-                  <Swiper
-                    slidesPerView={'auto'}
-                    spaceBetween={10}
-                    navigation
-                    scrollbar={{hide: true}}
-                    freeMode={true}
-                    modules={[FreeMode]}
-                    style={{
-                      display: 'flex',
-                      overflowX: 'hidden',
-                      whiteSpace: 'nowrap',
-                      flexDirection: 'row',
-                    }}
-                  >
-                    {filteredProducts.map((product, idx) => (
-                      <SwiperSlide
-                        key={`${product.id}-${idx}`}
-                        className="md:mr-5"
-                      >
-                        <ProductItem product={product} />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {checkedItems.length > 0 && searchQuery === '' && (
-          <div className="min-h-screen">
-            {categories.map((category, index) => {
-              const filteredProducts = sortedItems.filter((product) =>
-                product.tags.includes(category.tag_name),
-              );
-
-              const handleReachEnd = () => {
-                // Add animation effect when reaching the end
-                const slider = document.querySelector('.swiper-wrapper');
-                if (slider) {
-                  slider.classList.add('bounce-end');
-                  setTimeout(() => {
-                    slider.classList.remove('bounce-end');
-                  }, 500); // Duration of the animation
-                }
-              };
-
-              const handleReachBeginning = () => {
-                // Add animation effect when reaching the beginning
-                const slider = document.querySelector('.swiper-wrapper');
-                if (slider) {
-                  slider.classList.add('bounce-start');
-                  setTimeout(() => {
-                    slider.classList.remove('bounce-start');
-                  }, 500); // Duration of the animation
-                }
-              };
-
-              if (!filteredProducts.length) return null;
-
-              return (
-                <div key={category.tag_name}>
-                  <div className="flex justify-between items-center md:mb-8 mb-4">
+                return (
+                  <div key={category.tag_name}>
+                    {/* Render category header */}
                     <h1 className="md:text-4xl text-2xl font-bold">
                       {category.display_name}
                     </h1>
+
+                    {/* Render products */}
+                    <Swiper
+                      slidesPerView={'auto'}
+                      spaceBetween={10}
+                      navigation
+                      scrollbar={{hide: true}}
+                      freeMode={true}
+                      modules={[FreeMode]}
+                      style={{
+                        display: 'flex',
+                        overflowX: 'hidden',
+                        whiteSpace: 'nowrap',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      {filteredProducts.map((product, idx) => (
+                        <SwiperSlide
+                          key={`${product.id}-${idx}`}
+                          className="md:mr-5"
+                        >
+                          <ProductItem product={product} />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
                   </div>
+                );
+              })}
+            </div>
+          )}
 
-                  <Swiper
-                    slidesPerView={'auto'}
-                    spaceBetween={10}
-                    navigation
-                    scrollbar={{hide: true}}
-                    onReachEnd={handleReachEnd}
-                    onReachBeginning={handleReachBeginning}
-                    freeMode={true}
-                    modules={[FreeMode]}
-                    style={{
-                      display: 'flex',
-                      overflowX: 'hidden',
-                      whiteSpace: 'nowrap',
-                      flexDirection: 'row',
-                    }}
-                  >
-                    {filteredProducts.map((product, idx) => (
-                      <SwiperSlide
-                        key={`${product.id}-${idx}`}
-                        className="md:mr-5"
-                      >
-                        <ProductItem product={product} />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                </div>
-              );
-            })}
-          </div>
-        )}
+          {checkedItems.length > 0 && searchQuery === '' && (
+            <div className="min-h-screen">
+              {categories.map((category, index) => {
+                const filteredProducts = sortedItems.filter((product) =>
+                  product.tags.includes(category.tag_name),
+                );
 
-        {/* Handle search */}
-        {searchQuery !== '' && (
-          <div>
-            {categories.map((category, index) => {
-              const filteredProducts = filteredItems.filter((product) =>
-                product.tags.includes(category.tag_name),
-              );
+                const handleReachEnd = () => {
+                  // Add animation effect when reaching the end
+                  const slider = document.querySelector('.swiper-wrapper');
+                  if (slider) {
+                    slider.classList.add('bounce-end');
+                    setTimeout(() => {
+                      slider.classList.remove('bounce-end');
+                    }, 500); // Duration of the animation
+                  }
+                };
 
-              if (!filteredProducts.length) return null;
+                const handleReachBeginning = () => {
+                  // Add animation effect when reaching the beginning
+                  const slider = document.querySelector('.swiper-wrapper');
+                  if (slider) {
+                    slider.classList.add('bounce-start');
+                    setTimeout(() => {
+                      slider.classList.remove('bounce-start');
+                    }, 500); // Duration of the animation
+                  }
+                };
 
-              return (
-                <div key={category.tag_name}>
-                  {/* Render category header */}
-                  <h1 className="md:text-4xl text-2xl font-bold">
-                    {category.display_name}
-                  </h1>
+                if (!filteredProducts.length) return null;
 
-                  {/* Render products */}
-                  <Swiper
-                    slidesPerView={'auto'}
-                    spaceBetween={10}
-                    navigation
-                    scrollbar={{hide: true}}
-                    freeMode={true}
-                    modules={[FreeMode]}
-                    style={{
-                      display: 'flex',
-                      overflowX: 'hidden',
-                      whiteSpace: 'nowrap',
-                      flexDirection: 'row',
-                    }}
-                  >
-                    {filteredProducts.map((product, idx) => (
-                      <SwiperSlide
-                        key={`${product.id}-${idx}`}
-                        className="md:mr-5"
-                      >
-                        <ProductItem product={product} />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                return (
+                  <div key={category.tag_name}>
+                    <div className="flex justify-between items-center md:mb-8 mb-4">
+                      <h1 className="md:text-4xl text-2xl font-bold">
+                        {category.display_name}
+                      </h1>
+                    </div>
 
-        {/* Default rendering */}
-        {checkedItems.length === 0 && searchQuery === '' && (
-          <div className="min-h-screen"></div>
-        )}
-      </div>
-      {searchCandy && (
-        <div className="-mx-2 w-[100%] h-[86px] bg-[#333333]/50 fixed bottom-20 lg:bottom-20 xl:bottom-[98px] flex justify-center items-center z-30">
-          <input
-            type="search"
-            className="py-2.5 w-[50%] h-[53%] rounded text-sm font-normal text-black/50"
-            placeholder="Søg efter slik her"
-            onChange={(e) => handleInputChange(e)}
-          />
-          <button
-            className="p-0.5 w-10 h-[34px] bg-[#FFAD05] flex justify-center items-center absolute right-1 top-1"
-            onClick={() => {
-              setSearchCandy(false);
-              setSearchQuery('');
-            }}
-          >
-            <img
-              className=""
-              src={closeBlackIcon}
-              alt="close"
-              width={14}
-              height={18}
-            />
-          </button>
+                    <Swiper
+                      slidesPerView={'auto'}
+                      spaceBetween={10}
+                      navigation
+                      scrollbar={{hide: true}}
+                      onReachEnd={handleReachEnd}
+                      onReachBeginning={handleReachBeginning}
+                      freeMode={true}
+                      modules={[FreeMode]}
+                      style={{
+                        display: 'flex',
+                        overflowX: 'hidden',
+                        whiteSpace: 'nowrap',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      {filteredProducts.map((product, idx) => (
+                        <SwiperSlide
+                          key={`${product.id}-${idx}`}
+                          className="md:mr-5"
+                        >
+                          <ProductItem product={product} />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Handle search */}
+          {searchQuery !== '' && (
+            <div>
+              {categories.map((category, index) => {
+                const filteredProducts = filteredItems.filter((product) =>
+                  product.tags.includes(category.tag_name),
+                );
+
+                if (!filteredProducts.length) return null;
+
+                return (
+                  <div key={category.tag_name}>
+                    {/* Render category header */}
+                    <h1 className="md:text-4xl text-2xl font-bold">
+                      {category.display_name}
+                    </h1>
+
+                    {/* Render products */}
+                    <Swiper
+                      slidesPerView={'auto'}
+                      spaceBetween={10}
+                      navigation
+                      scrollbar={{hide: true}}
+                      freeMode={true}
+                      modules={[FreeMode]}
+                      style={{
+                        display: 'flex',
+                        overflowX: 'hidden',
+                        whiteSpace: 'nowrap',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      {filteredProducts.map((product, idx) => (
+                        <SwiperSlide
+                          key={`${product.id}-${idx}`}
+                          className="md:mr-5"
+                        >
+                          <ProductItem product={product} />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Default rendering */}
+          {checkedItems.length === 0 && searchQuery === '' && (
+            <div className="min-h-screen"></div>
+          )}
         </div>
-      )}
+      </div>
+      {/* {searchCandy && ( */}
+      <div
+        className="-mx-2 w-[100%] h-[86px] bg-[#333333]/50 fixed bottom-20 lg:bottom-20 xl:bottom-[98px] flex justify-center items-center z-20"
+        style={{
+          transition: 'opacity 0.3s ease, transform 0.3s ease',
+          opacity: searchCandy ? '1' : '0',
+          transform: searchCandy ? 'translateY(0)' : 'translateY(100%)',
+        }}
+      >
+        <input
+          type="search"
+          className="py-2.5 w-[50%] h-[53%] rounded text-sm font-normal text-black/50"
+          placeholder="Søg efter slik her"
+          onChange={(e) => handleInputChange(e)}
+        />
+        <button
+          className="p-0.5 w-10 h-[34px] bg-[#FFAD05] flex justify-center items-center absolute right-1 top-1"
+          onClick={() => {
+            setSearchCandy(false);
+            setSearchQuery('');
+          }}
+        >
+          <img
+            className=""
+            src={closeBlackIcon}
+            alt="close"
+            width={14}
+            height={18}
+          />
+        </button>
+      </div>
+      {/* )} */}
       {/* {!searchCandy && ( */}
       <div className="-mx-2 lg:hidden py-0.5 px-2.5 bg-[#acddd6] rounded-se-[10px] fixed bottom-20 flex items-center z-20">
         <div className="flex items-center text-xs font-semibold">
@@ -768,42 +776,50 @@ function ProductsGrid({
         </div>
       </div>
       {/* )} */}
-      {searchFilter && (
-        <div className="fixed top-[126px] right-0 bottom-[80px] w-80 h-full pt-2 pb-20 lg:pt-1 xl:pb-[98px] bg-[#f2f0f2] grid grid-cols-[1fr_5fr] content-start text-[#6E4695] z-10">
-          <div></div>
-          <div className="flex flex-row-reverse">
-            <button
-              className="mt-5 mb-4 py-0 px-5"
-              onClick={() => {
-                setSearchFilter(false);
-                setSearchQuery('');
-              }}
-            >
-              <img
-                className=""
-                src={closeBlackIcon}
-                alt="close"
-                width={16}
-                height={16}
-              />
-            </button>
+      {/* {searchFilter && ( */}
+      <div
+        className="fixed top-[126px] right-0 bottom-[80px] w-80 h-full pt-2 pb-20 lg:pt-1 xl:pb-[98px] bg-[#f2f0f2] grid grid-cols-[1fr_5fr] content-start text-[#6E4695] z-10"
+        style={{
+          transition: 'transform 0.3s ease, opacity 0.3s ease',
+          transform: searchFilter ? 'translateX(0)' : 'translateX(100%)',
+          opacity: searchFilter ? '1' : '0',
+        }}
+      >
+        <div></div>
+        <div className="flex flex-row-reverse">
+          <button
+            className="mt-5 mb-4 py-0 px-5"
+            onClick={() => {
+              setSearchFilter(false);
+              setSearchQuery('');
+            }}
+          >
+            <img
+              className=""
+              src={closeBlackIcon}
+              alt="close"
+              width={16}
+              height={16}
+            />
+          </button>
+        </div>
+        <div></div>
+        <div>
+          <div className="flex items-center justify-between mt-[20px] mb-4 px-5 lg:pl-[10px] font-bold text-base">
+            <span>Søgefiltre</span>
           </div>
-          <div></div>
-          <div>
-            <div className="flex items-center justify-between mt-[20px] mb-4 px-5 lg:pl-[10px] font-bold text-base">
-              <span>Søgefiltre</span>
-            </div>
-            <div className="filter__item__wrapper h-full px-5 lg:pl-[10px] lg:pr-[30px] sm:pb-0 overflow-y-auto">
-              <ul>
-                {groups.map((groupName, index) => {
-                  const filteredTitles = categories.filter((productTitle) => {
-                    return productTitle.group === groupName.group;
-                  });
+          <div className="filter__item__wrapper h-full px-5 lg:pl-[10px] lg:pr-[30px] sm:pb-0 overflow-y-auto">
+            <ul>
+              {groups.map((groupName, index) => {
+                const filteredTitles = categories.filter((productTitle) => {
+                  return productTitle.group === groupName.group;
+                });
 
-                  /* if (!filteredTitles.length) return null; */
+                /* if (!filteredTitles.length) return null; */
 
-                  return (
-                    <li className="mb-3 last:mb-0" key={groupName.group}>
+                return (
+                  <>
+                    {/* <li className="mb-3 last:mb-0" key={groupName.group}>
                       <div className="rounded-md shadow-[0_0_6px_rgba(0,0,0,0.07)]">
                         <div className="bg-white flex items-center justify-between px-3 py-[10px] border border-filterBorder rounded-md cursor-pointer">
                           <span className="font-bold text-base capitalize">
@@ -880,15 +896,107 @@ function ProductsGrid({
                           </ul>
                         </div>
                       </div>
+                    </li> */}
+
+                    <li className="mb-3 last:mb-0" key={groupName.group}>
+                      <div className="rounded-md shadow-[0_0_6px_rgba(0,0,0,0.07)]">
+                        <div className="bg-white flex items-center justify-between px-3 py-[10px] border border-filterBorder rounded-md cursor-pointer">
+                          <span className="font-bold text-base capitalize">
+                            {groupName.group}
+                          </span>
+                          <button
+                            className="flex items-center justify-center w-5 h-5"
+                            onClick={() =>
+                              setShowList((prevState) => ({
+                                ...prevState,
+                                [groupName.group]: !prevState[groupName.group],
+                              }))
+                            }
+                          >
+                            <img
+                              className={
+                                showList[groupName.group] ? '-rotate-180' : ''
+                              }
+                              src={downArrow}
+                              alt={
+                                showList[groupName.group]
+                                  ? 'Expand'
+                                  : 'Collapse'
+                              }
+                              style={{
+                                transition: 'transform 0.3s ease',
+                              }}
+                            />
+                          </button>
+                        </div>
+
+                        <div
+                          className={`overflow-y-scroll scrollbar-style ${
+                            showList[groupName.group]
+                              ? 'max-h-[116px]'
+                              : 'max-h-0'
+                          } transition-[max-height] duration-300 ease-in-out`}
+                          /* style={{
+                              maxHeight: showList[groupName.group]
+                                ? '116px'
+                                : '0px',
+                              transition: 'max-height 0.3s ease',
+                            }} */
+                        >
+                          <ul>
+                            {filteredTitles.map((groupTitle) => (
+                              <li
+                                className={`flex items-center justify-between px-3 py-[10px] first:pt-5 last:pb-5 cursor-pointer group ${
+                                  showList[groupName.group]
+                                    ? 'group-active'
+                                    : ''
+                                }`}
+                                key={groupTitle.tag_name}
+                                onClick={() => handleClick(groupTitle.tag_name)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    handleClick(groupTitle.tag_name);
+                                  }
+                                }}
+                                role="button"
+                                tabIndex={0}
+                              >
+                                <p
+                                  className={`font-normal text-base ${
+                                    checkedItems.includes(groupTitle.tag_name)
+                                      ? 'text-[#FFAD05]'
+                                      : ''
+                                  } transition-[color] duration-100 ease-in-out`}
+                                  /* style={{transition: 'color 0.1s ease-out'}} */
+                                >
+                                  {groupTitle.display_name}
+                                </p>
+                                <div
+                                  className={`w-3 h-3 ml-5 border-2 border-[#FFAD05] rounded-full ${
+                                    checkedItems.includes(groupTitle.tag_name)
+                                      ? 'bg-[#FFAD05]'
+                                      : ''
+                                  }`}
+                                  style={{
+                                    transition:
+                                      'background-color 0.1s ease-out',
+                                  }}
+                                ></div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
                     </li>
-                  );
-                })}
-              </ul>
-            </div>
+                  </>
+                );
+              })}
+            </ul>
           </div>
         </div>
-      )}
-      <div className="-mx-2 w-[100%] h-20 xl:h-[98px] bg-[#6E4695] fixed bottom-0 lg:flex lg:justify-evenly lg:items-center z-20">
+      </div>
+      {/* )} */}
+      <div className="-mx-2 w-[100%] h-20 xl:h-[98px] bg-[#6E4695] fixed bottom-0 lg:flex lg:justify-evenly lg:items-center z-30">
         <div className="w-[90%] h-full sm:w-[415px] lg:w-[768px] xl:w-[1130px] mx-auto flex flex-col justify-center lg:flex-row lg:items-center">
           <div className="text-white flex flex-row lg:flex-col justify-between lg:justify-center lg:flex-start lg:w-[30%] xl:w-[40%] lg:h-16">
             <p className="text-sm lg:text-base">
